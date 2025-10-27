@@ -1,0 +1,1387 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>กำหนดการเรียนรู้ลูกเสือ Block Course (K-Minimal)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            box-sizing: border-box;
+            font-family: 'Noto Sans Thai', sans-serif;
+            /* สีพื้นหลังสไตล์ K-Minimal (อบอุ่น) */
+            background-color: #fdfcfb; /* Slightly warmer than bg-stone-50 */
+        }
+        
+        .gradient-header {
+            /* ใช้ Gradient เดิม แต่ดูดีบนพื้นหลังใหม่ */
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 50%, #06b6d4 100%);
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-5px);
+            /* เงาที่นุ่มนวลขึ้น */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        /* สไตล์ปุ่มเมนูหลัก (Active) */
+        .nav-btn-active {
+            background-color: #2563eb; /* blue-600 */
+            color: white;
+            box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2), 0 2px 4px -1px rgba(37, 99, 235, 0.1);
+        }
+        
+        /* สไตล์ปุ่มเมนูหลัก (Inactive) */
+        .nav-btn-inactive {
+            background-color: #ffffff;
+            color: #374151; /* gray-700 */
+            border: 1px solid #e5e7eb; /* gray-200 */
+        }
+        .nav-btn-inactive:hover {
+            background-color: #f9fafb; /* gray-50 */
+        }
+        
+        /* สไตล์ปุ่มเลือกชั้นปี (Active) */
+        .tab-btn-active {
+            background: linear-gradient(135deg, #059669, #10b981);
+            color: white;
+            font-weight: 600;
+        }
+
+        /* สไตล์ปุ่มเลือกภาคเรียน (Active) */
+        .term-tab-active {
+            border-bottom: 3px solid #1e3a8a; /* dark blue */
+            color: #1e3a8a;
+            font-weight: 600;
+        }
+        
+        .term-tab-inactive {
+            color: #6b7280; /* gray-500 */
+        }
+        .term-tab-inactive:hover {
+            color: #111827; /* gray-900 */
+        }
+
+        /* ซ่อน/แสดงเนื้อหา */
+        .section-content, .grade-content, .term-content {
+            display: none;
+        }
+        .active-section, .active-grade, .active-term {
+            display: block;
+        }
+
+        /* สไตล์สำหรับปุ่มดาวน์โหลด */
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        
+        .download-btn-word {
+            background: linear-gradient(135deg, #2b579a, #3b82f6);
+            color: white;
+        }
+        
+        .download-btn-word:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 12px -3px rgba(43, 87, 154, 0.3);
+        }
+        
+        .download-btn-pdf {
+            background: linear-gradient(135deg, #dc2626, #ef4444);
+            color: white;
+        }
+        
+        .download-btn-pdf:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 12px -3px rgba(220, 38, 38, 0.3);
+        }
+    </style>
+</head>
+<body class="bg-stone-50 min-h-screen">
+    <header class="gradient-header text-white py-8 px-4">
+        <div class="max-w-6xl mx-auto text-center">
+            <div class="flex items-center justify-center mb-4">
+                <div class="bg-white/20 p-3 rounded-full mr-4">
+                    <img src="https://img2.pic.in.th/pic/sa1.png" alt="โลโก้โรงเรียนสา" class="w-12 h-12 object-contain" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                    <svg class="w-8 h-8 hidden" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2L13.09 8.26L22 9L13.09 9.74L12 16L10.91 9.74L2 9L10.91 8.26L12 2Z"/>
+                    </svg>
+                </div>
+                <h1 class="text-3xl md:text-4xl font-bold">กำหนดการเรียนรู้ลูกเสือ Block Course</h1>
+            </div>
+            <p class="text-xl opacity-90">โรงเรียนสา ลูกเสือสามัญรุ่นใหญ่ ม.1 ม.2 ม.3</p>
+            <p class="text-lg opacity-80 mt-2">Block Course 3 วัน ไป-กลับ</p>
+        </div>
+    </header>
+
+    <div class="max-w-6xl mx-auto px-4 -mt-8 relative z-10 mb-6">
+        <div class="bg-white rounded-xl shadow-lg p-3 border border-gray-100">
+            <div class="flex flex-wrap gap-2 justify-center">
+                <button onclick="showSection('schedule')" id="nav-schedule" class="nav-btn nav-btn-active px-4 py-2 rounded-full font-medium transition-all duration-300">
+                    📅 กำหนดการเรียนรู้
+                </button>
+                <button onclick="showSection('rotation')" id="nav-rotation" class="nav-btn nav-btn-inactive px-4 py-2 rounded-full font-medium transition-all duration-300">
+                    🔄 ตารางเวียนฐาน
+                </button>
+                <button onclick="showSection('materials')" id="nav-materials" class="nav-btn nav-btn-inactive px-4 py-2 rounded-full font-medium transition-all duration-300">
+                    📖 สื่อใบความรู้
+                </button>
+                <button onclick="showSection('lesson-plans')" id="nav-lesson-plans" class="nav-btn nav-btn-inactive px-4 py-2 rounded-full font-medium transition-all duration-300">
+                    📋 แผนการจัดการเรียนรู้
+                </button>
+                <button onclick="showSection('quiz')" id="nav-quiz" class="nav-btn nav-btn-inactive px-4 py-2 rounded-full font-medium transition-all duration-300">
+                    📝 แบบทดสอบ
+                </button>
+                <button onclick="showSection('songs-games')" id="nav-songs-games" class="nav-btn nav-btn-inactive px-4 py-2 rounded-full font-medium transition-all duration-300">
+                    🎵 เพลงและเกม
+                </button>
+                <a href="https://jinchanya-boop.github.io/scout/" target="_blank" rel="noopener noreferrer" id="nav-record" class="nav-btn nav-btn-inactive px-4 py-2 rounded-full font-medium transition-all duration-300 inline-block">
+                    📋 แบบบันทึกกิจกรรม
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div id="schedule-tabs" class="max-w-6xl mx-auto px-4 mb-6 active-section">
+        <div class="bg-white rounded-lg shadow-md p-2 flex flex-wrap gap-2">
+            <button onclick="showGrade(1)" id="tab-1" class="tab-btn flex-1 min-w-0 px-4 py-3 rounded-md font-medium transition-all duration-300 tab-btn-active">
+                📚 ม.1 - พื้นฐานวินัย
+            </button>
+            <button onclick="showGrade(2)" id="tab-2" class="tab-btn flex-1 min-w-0 px-4 py-3 rounded-md font-medium transition-all duration-300 bg-gray-100 text-gray-700 hover:bg-gray-200">
+                🎯 ม.2 - จิตสาธารณะ
+            </button>
+            <button onclick="showGrade(3)" id="tab-3" class="tab-btn flex-1 min-w-0 px-4 py-3 rounded-md font-medium transition-all duration-300 bg-gray-100 text-gray-700 hover:bg-gray-200">
+                👑 ม.3 - ความเป็นผู้นำ
+            </button>
+        </div>
+    </div>
+
+    <div class="max-w-6xl mx-auto px-4 py-4">
+
+        <div id="schedule-section" class="section-content active-section">
+            
+            <div id="grade-1" class="grade-content active-grade">
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                    <div class="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-6">
+                        <h2 class="text-2xl font-bold flex items-center">
+                            <span class="bg-white/20 p-2 rounded-lg mr-3">📚</span>
+                            ระดับชั้น ม.1 - พื้นฐานวินัยและทักษะ
+                        </h2>
+                    </div>
+                    <div class="border-b border-gray-200">
+                        <nav class="flex justify-center gap-6 -mb-px px-6">
+                            <button onclick="showTerm(1, 1)" id="grade-1-tab-1" class="term-tab term-tab-active py-4 px-1 text-center">ภาคเรียนที่ 1</button>
+                            <button onclick="showTerm(1, 2)" id="grade-1-tab-2" class="term-tab term-tab-inactive py-4 px-1 text-center">ภาคเรียนที่ 2</button>
+                        </nav>
+                    </div>
+                    
+                    <div id="grade-1-term-1" class="term-content p-6 grid grid-cols-1 md:grid-cols-2 gap-4" style="display: grid;">
+                        <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-6 card-hover border border-blue-200">
+                            <h3 class="text-xl font-bold text-blue-800 mb-4">📅 วันที่ 1: พื้นฐานลูกเสือและวินัย</h3>
+                            <div class="space-y-3">
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">08.00-09.00 น. : พิธีเปิด</p>
+                                    <p class="text-gray-600 text-sm mt-1">- แนะนำโปรแกรม<br>- สวนสนามเบื้องต้น</p>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">09.00-10.30 น. : ฐานที่ 1</p>
+                                    <p class="text-gray-600 text-sm mt-1">ลักษณะเครื่องแบบลูกเสือ</p>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">10.30-12.00 น. : ฐานที่ 2</p>
+                                    <p class="text-gray-600 text-sm mt-1">กฎและคำปฏิญาณลูกเสือ</p>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">12.00-13.00 น. : พักรับประทานอาหาร</p>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">13.00-14.30 น. : ฐานที่ 3</p>
+                                    <p class="text-gray-600 text-sm mt-1">การทำความเคารพลูกเสือ</p>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">14.30-16.00 น. : ฐานที่ 4</p>
+                                    <p class="text-gray-600 text-sm mt-1">สัญญาณมือและการใช้นกหวีด</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-lg p-6 card-hover border border-green-200">
+                            <h3 class="text-xl font-bold text-green-800 mb-4">📅 วันที่ 2: ทักษะการเอาชีวิตรอด</h3>
+                            <div class="space-y-3">
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">08.00-09.30 น. : ฐานที่ 5</p>
+                                    <p class="text-gray-600 text-sm mt-1">การผูกเงื่อนพื้นฐาน</p>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">09.30-11.00 น. : ฐานที่ 6</p>
+                                    <p class="text-gray-600 text-sm mt-1">การปฐมพยาบาลเบื้องต้น</p>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">11.00-12.00 น. : ฐานที่ 7</p>
+                                    <p class="text-gray-600 text-sm mt-1">การใช้เข็มทิศและการหาทิศ</p>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">12.00-13.00 น. : พักรับประทานอาหาร</p>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">13.00-14.30 น. : ฐานที่ 8</p>
+                                    <p class="text-gray-600 text-sm mt-1">การจุดไฟและการทำอาหาร</p>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">14.30-16.00 น. : ฐานที่ 9</p>
+                                    <p class="text-gray-600 text-sm mt-1">การตั้งเต็นท์และการพักแรม</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-6 card-hover border border-purple-200 md:col-span-2">
+                            <h3 class="text-xl font-bold text-purple-800 mb-4">📅 วันที่ 3: บูรณาการและปิดค่าย</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">08.00-10.00 น. : กิจกรรมบูรณาการ</p>
+                                    <p class="text-gray-600 text-sm mt-1">เกมและกิจกรรมทบทวน</p>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">10.00-11.00 น. : ทดสอบความรู้</p>
+                                    <p class="text-gray-600 text-sm mt-1">แบบทดสอบ 20 ข้อ</p>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">11.00-12.00 น. : พิธีปิดและมอบประกาศนียบัตร</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="grade-1-term-2" class="term-content p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-6 card-hover border border-blue-200">
+                            <h3 class="text-xl font-bold text-blue-800 mb-4">📅 วันที่ 1: ทบทวนและพัฒนา</h3>
+                            <div class="space-y-3">
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">08.00-09.00 น. : พิธีเปิด</p>
+                                    <p class="text-gray-600 text-sm mt-1">- ทบทวนความรู้ภาคเรียนที่ 1</p>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">09.00-10.30 น. : ฐานที่ 1</p>
+                                    <p class="text-gray-600 text-sm mt-1">เทคนิคการผูกเงื่อนขั้นสูง</p>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">10.30-12.00 น. : ฐานที่ 2</p>
+                                    <p class="text-gray-600 text-sm mt-1">การสร้างที่พักชั่วคราว</p>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">12.00-13.00 น. : พักรับประทานอาหาร</p>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">13.00-14.30 น. : ฐานที่ 3</p>
+                                    <p class="text-gray-600 text-sm mt-1">การอ่านแผนที่และการหาทิศขั้นสูง</p>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">14.30-16.00 น. : ฐานที่ 4</p>
+                                    <p class="text-gray-600 text-sm mt-1">เทคนิคการเอาชีวิตรอดในป่า</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-lg p-6 card-hover border border-green-200">
+                            <h3 class="text-xl font-bold text-green-800 mb-4">📅 วันที่ 2: การทำงานเป็นทีม</h3>
+                            <div class="space-y-3">
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">08.00-09.30 น. : ฐานที่ 5</p>
+                                    <p class="text-gray-600 text-sm mt-1">กิจกรรมสร้างทีม</p>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">09.30-11.00 น. : ฐานที่ 6</p>
+                                    <p class="text-gray-600 text-sm mt-1">การสื่อสารและการทำงานร่วมกัน</p>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">11.00-12.00 น. : ฐานที่ 7</p>
+                                    <p class="text-gray-600 text-sm mt-1">โครงการบริการชุมชน</p>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">12.00-13.00 น. : พักรับประทานอาหาร</p>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">13.00-14.30 น. : ฐานที่ 8</p>
+                                    <p class="text-gray-600 text-sm mt-1">การจัดการสิ่งแวดล้อม</p>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">14.30-16.00 น. : ฐานที่ 9</p>
+                                    <p class="text-gray-600 text-sm mt-1">เกมกลางแจ้งและการผจญภัย</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-6 card-hover border border-purple-200 md:col-span-2">
+                            <h3 class="text-xl font-bold text-purple-800 mb-4">📅 วันที่ 3: สรุปและประเมินผล</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">08.00-10.00 น. : กิจกรรมสรุปและทบทวน</p>
+                                    <p class="text-gray-600 text-sm mt-1">นำเสนอโครงการกลุ่ม</p>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">10.00-11.00 น. : ทดสอบความรู้รวม</p>
+                                    <p class="text-gray-600 text-sm mt-1">แบบทดสอบภาคเรียนที่ 2</p>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">11.00-12.00 น. : พิธีปิดและมอบเกียรติบัตร</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="grade-2" class="grade-content">
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                    <div class="bg-gradient-to-r from-green-600 to-green-700 text-white p-6">
+                        <h2 class="text-2xl font-bold flex items-center">
+                            <span class="bg-white/20 p-2 rounded-lg mr-3">🎯</span>
+                            ระดับชั้น ม.2 - จิตสาธารณะและบริการ
+                        </h2>
+                    </div>
+                    <div class="border-b border-gray-200">
+                        <nav class="flex justify-center gap-6 -mb-px px-6">
+                            <button onclick="showTerm(2, 1)" id="grade-2-tab-1" class="term-tab term-tab-active py-4 px-1 text-center">ภาคเรียนที่ 1</button>
+                            <button onclick="showTerm(2, 2)" id="grade-2-tab-2" class="term-tab term-tab-inactive py-4 px-1 text-center">ภาคเรียนที่ 2</button>
+                        </nav>
+                    </div>
+
+                    <div id="grade-2-term-1" class="term-content p-6 grid grid-cols-1 md:grid-cols-2 gap-4" style="display: grid;">
+                        <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-6 card-hover border border-blue-200">
+                            <h3 class="text-xl font-bold text-blue-800 mb-4">📅 วันที่ 1: ภาวะผู้นำและจิตอาสา</h3>
+                            <div class="space-y-3">
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">08.00-09.00 น. : พิธีเปิด</p>
+                                    <p class="text-gray-600 text-sm mt-1">- แนะนำโปรแกรมและจัดหมู่</p>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">09.00-10.30 น. : ฐานที่ 1</p>
+                                    <p class="text-gray-600 text-sm mt-1">การพัฒนาภาวะผู้นำ</p>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">10.30-12.00 น. : ฐานที่ 2</p>
+                                    <p class="text-gray-600 text-sm mt-1">การทำงานเป็นทีมขั้นสูง</p>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">12.00-13.00 น. : พักรับประทานอาหาร</p>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">13.00-14.30 น. : ฐานที่ 3</p>
+                                    <p class="text-gray-600 text-sm mt-1">จิตอาสาและการบริการชุมชน</p>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">14.30-16.00 น. : ฐานที่ 4</p>
+                                    <p class="text-gray-600 text-sm mt-1">โครงการพัฒนาชุมชน</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-lg p-6 card-hover border border-green-200">
+                            <h3 class="text-xl font-bold text-green-800 mb-4">📅 วันที่ 2: ทักษะการเอาชีวิตรอดขั้นสูง</h3>
+                            <div class="space-y-3">
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">08.00-09.30 น. : ฐานที่ 5</p>
+                                    <p class="text-gray-600 text-sm mt-1">การปฐมพยาบาลขั้นสูง</p>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">09.30-11.00 น. : ฐานที่ 6</p>
+                                    <p class="text-gray-600 text-sm mt-1">การช่วยเหลือในภาวะฉุกเฉิน</p>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">11.00-12.00 น. : ฐานที่ 7</p>
+                                    <p class="text-gray-600 text-sm mt-1">การนำทางและการใช้ GPS</p>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">12.00-13.00 น. : พักรับประทานอาหาร</p>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">13.00-14.30 น. : ฐานที่ 8</p>
+                                    <p class="text-gray-600 text-sm mt-1">การสร้างเครื่องมือในป่า</p>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">14.30-16.00 น. : ฐานที่ 9</p>
+                                    <p class="text-gray-600 text-sm mt-1">การผจญภัยและการท้าทาย</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-6 card-hover border border-purple-200 md:col-span-2">
+                            <h3 class="text-xl font-bold text-purple-800 mb-4">📅 วันที่ 3: นำเสนอและประเมินผล</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">08.00-10.00 น. : นำเสนอโครงการ</p>
+                                    <p class="text-gray-600 text-sm mt-1">โครงการบริการชุมชน</p>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">10.00-11.00 น. : ทดสอบความรู้</p>
+                                    <p class="text-gray-600 text-sm mt-1">แบบทดสอบ 25 ข้อ</p>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">11.00-12.00 น. : พิธีปิดและมอบประกาศนียบัตร</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="grade-2-term-2" class="term-content p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-6 card-hover border border-blue-200">
+                            <h3 class="text-xl font-bold text-blue-800 mb-4">📅 วันที่ 1: พัฒนาภาวะผู้นำต่อ</h3>
+                            <div class="space-y-3">
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">08.00-09.00 น. : พิธีเปิด</p>
+                                    <p class="text-gray-600 text-sm mt-1">- ทบทวนและวางแผนภาคเรียนที่ 2</p>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">09.00-10.30 น. : ฐานที่ 1</p>
+                                    <p class="text-gray-600 text-sm mt-1">การสื่อสารที่มีประสิทธิภาพ</p>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">10.30-12.00 น. : ฐานที่ 2</p>
+                                    <p class="text-gray-600 text-sm mt-1">การแก้ปัญหาและการตัดสินใจ</p>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">12.00-13.00 น. : พักรับประทานอาหาร</p>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">13.00-14.30 น. : ฐานที่ 3</p>
+                                    <p class="text-gray-600 text-sm mt-1">การจัดการโครงการ</p>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">14.30-16.00 น. : ฐานที่ 4</p>
+                                    <p class="text-gray-600 text-sm mt-1">การสร้างแรงบันดาลใจ</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-lg p-6 card-hover border border-green-200">
+                            <h3 class="text-xl font-bold text-green-800 mb-4">📅 วันที่ 2: โครงการบริการสังคม</h3>
+                            <div class="space-y-3">
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">08.00-09.30 น. : ฐานที่ 5</p>
+                                    <p class="text-gray-600 text-sm mt-1">การวางแผนโครงการ</p>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">09.30-11.00 น. : ฐานที่ 6</p>
+                                    <p class="text-gray-600 text-sm mt-1">การระดมทรัพยากร</p>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">11.00-12.00 น. : ฐานที่ 7</p>
+                                    <p class="text-gray-600 text-sm mt-1">การประชาสัมพันธ์</p>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">12.00-13.00 น. : พักรับประทานอาหาร</p>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">13.00-14.30 น. : ฐานที่ 8</p>
+                                    <p class="text-gray-600 text-sm mt-1">การลงมือทำโครงการ</p>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">14.30-16.00 น. : ฐานที่ 9</p>
+                                    <p class="text-gray-600 text-sm mt-1">การประเมินผลโครงการ</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-6 card-hover border border-purple-200 md:col-span-2">
+                            <h3 class="text-xl font-bold text-purple-800 mb-4">📅 วันที่ 3: นำเสนอผลงานและสรุป</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">08.00-10.00 น. : นำเสนอผลงาน</p>
+                                    <p class="text-gray-600 text-sm mt-1">โครงการบริการสังคม</p>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">10.00-11.00 น. : ทดสอบรวม</p>
+                                    <p class="text-gray-600 text-sm mt-1">ประเมินผลภาคเรียนที่ 2</p>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">11.00-12.00 น. : พิธีปิดและมอบเกียรติบัตร</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="grade-3" class="grade-content">
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                    <div class="bg-gradient-to-r from-purple-600 to-purple-700 text-white p-6">
+                        <h2 class="text-2xl font-bold flex items-center">
+                            <span class="bg-white/20 p-2 rounded-lg mr-3">👑</span>
+                            ระดับชั้น ม.3 - ความเป็นผู้นำและการพัฒนา
+                        </h2>
+                    </div>
+                    <div class="border-b border-gray-200">
+                        <nav class="flex justify-center gap-6 -mb-px px-6">
+                            <button onclick="showTerm(3, 1)" id="grade-3-tab-1" class="term-tab term-tab-active py-4 px-1 text-center">ภาคเรียนที่ 1</button>
+                            <button onclick="showTerm(3, 2)" id="grade-3-tab-2" class="term-tab term-tab-inactive py-4 px-1 text-center">ภาคเรียนที่ 2</button>
+                        </nav>
+                    </div>
+
+                    <div id="grade-3-term-1" class="term-content p-6 grid grid-cols-1 md:grid-cols-2 gap-4" style="display: grid;">
+                        <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-6 card-hover border border-blue-200">
+                            <h3 class="text-xl font-bold text-blue-800 mb-4">📅 วันที่ 1: ผู้นำและการจัดการ</h3>
+                            <div class="space-y-3">
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">08.00-09.00 น. : พิธีเปิด</p>
+                                    <p class="text-gray-600 text-sm mt-1">- บทบาทผู้นำรุ่นพี่</p>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">09.00-10.30 น. : ฐานที่ 1</p>
+                                    <p class="text-gray-600 text-sm mt-1">ภาวะผู้นำขั้นสูง</p>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">10.30-12.00 น. : ฐานที่ 2</p>
+                                    <p class="text-gray-600 text-sm mt-1">การบริหารจัดการทีม</p>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">12.00-13.00 น. : พักรับประทานอาหาร</p>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">13.00-14.30 น. : ฐานที่ 3</p>
+                                    <p class="text-gray-600 text-sm mt-1">การสอนและการถ่ายทอด</p>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">14.30-16.00 น. : ฐานที่ 4</p>
+                                    <p class="text-gray-600 text-sm mt-1">การพัฒนาองค์กร</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-lg p-6 card-hover border border-green-200">
+                            <h3 class="text-xl font-bold text-green-800 mb-4">📅 วันที่ 2: โครงการพัฒนาสังคม</h3>
+                            <div class="space-y-3">
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">08.00-09.30 น. : ฐานที่ 5</p>
+                                    <p class="text-gray-600 text-sm mt-1">การวิเคราะห์ปัญหาสังคม</p>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">09.30-11.00 น. : ฐานที่ 6</p>
+                                    <p class="text-gray-600 text-sm mt-1">การออกแบบโครงการ</p>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">11.00-12.00 น. : ฐานที่ 7</p>
+                                    <p class="text-gray-600 text-sm mt-1">การบริหารจัดการโครงการ</p>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">12.00-13.00 น. : พักรับประทานอาหาร</p>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">13.00-14.30 น. : ฐานที่ 8</p>
+                                    <p class="text-gray-600 text-sm mt-1">การนำเสนอและเจรจาต่อรอง</p>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">14.30-16.00 น. : ฐานที่ 9</p>
+                                    <p class="text-gray-600 text-sm mt-1">การสร้างเครือข่าย</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-6 card-hover border border-purple-200 md:col-span-2">
+                            <h3 class="text-xl font-bold text-purple-800 mb-4">📅 วันที่ 3: บูรณาการและผ่านพิธี</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">08.00-10.00 น. : นำเสนอโครงการ</p>
+                                    <p class="text-gray-600 text-sm mt-1">โครงการพัฒนาสังคม</p>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">10.00-11.00 น. : ทดสอบความรู้รวม</p>
+                                    <p class="text-gray-600 text-sm mt-1">แบบทดสอบ 30 ข้อ</p>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">11.00-12.00 น. : พิธีปิดและมอบประกาศนียบัตร</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="grade-3-term-2" class="term-content p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-6 card-hover border border-blue-200">
+                            <h3 class="text-xl font-bold text-blue-800 mb-4">📅 วันที่ 1: ผู้นำการเปลี่ยนแปลง</h3>
+                            <div class="space-y-3">
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">08.00-09.00 น. : พิธีเปิด</p>
+                                    <p class="text-gray-600 text-sm mt-1">- เตรียมความพร้อมสู่ผู้นำ</p>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">09.00-10.30 น. : ฐานที่ 1</p>
+                                    <p class="text-gray-600 text-sm mt-1">การสร้างวิสัยทัศน์</p>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">10.30-12.00 น. : ฐานที่ 2</p>
+                                    <p class="text-gray-600 text-sm mt-1">การจัดการความขัดแย้ง</p>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">12.00-13.00 น. : พักรับประทานอาหาร</p>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">13.00-14.30 น. : ฐานที่ 3</p>
+                                    <p class="text-gray-600 text-sm mt-1">การสร้างความเปลี่ยนแปลง</p>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">14.30-16.00 น. : ฐานที่ 4</p>
+                                    <p class="text-gray-600 text-sm mt-1">การพัฒนาอย่างยั่งยืน</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-lg p-6 card-hover border border-green-200">
+                            <h3 class="text-xl font-bold text-green-800 mb-4">📅 วันที่ 2: โครงการมรดกลูกเสือ</h3>
+                            <div class="space-y-3">
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">08.00-09.30 น. : ฐานที่ 5</p>
+                                    <p class="text-gray-600 text-sm mt-1">ออกแบบโครงการมรดก</p>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">09.30-11.00 น. : ฐานที่ 6</p>
+                                    <p class="text-gray-600 text-sm mt-1">การดำเนินการ</p>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">11.00-12.00 น. : ฐานที่ 7</p>
+                                    <p class="text-gray-600 text-sm mt-1">การสื่อสารและประชาสัมพันธ์</p>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">12.00-13.00 น. : พักรับประทานอาหาร</p>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">13.00-14.30 น. : ฐานที่ 8</p>
+                                    <p class="text-gray-600 text-sm mt-1">การถ่ายทอดให้รุ่นน้อง</p>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">14.30-16.00 น. : ฐานที่ 9</p>
+                                    <p class="text-gray-600 text-sm mt-1">การประเมินและปรับปรุง</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-6 card-hover border border-purple-200 md:col-span-2">
+                            <h3 class="text-xl font-bold text-purple-800 mb-4">📅 วันที่ 3: พิธีส่งมอบและสรุป</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">08.00-10.00 น. : นำเสนอโครงการมรดก</p>
+                                    <p class="text-gray-600 text-sm mt-1">ส่งมอบผลงานสู่รุ่นน้อง</p>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">10.00-11.00 น. : ทดสอบสุดท้าย</p>
+                                    <p class="text-gray-600 text-sm mt-1">ประเมินผลรวมทั้งหมด</p>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <p class="font-semibold text-gray-700">11.00-12.00 น. : พิธีปิดและมอบประกาศนียบัตรพิเศษ</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="rotation-section" class="section-content">
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <div class="bg-gradient-to-r from-cyan-600 to-blue-600 text-white p-6 rounded-lg mb-6">
+                    <h2 class="text-2xl font-bold flex items-center">
+                        <span class="bg-white/20 p-2 rounded-lg mr-3">🔄</span>
+                        ตารางเวียนฐานการเรียนรู้
+                    </h2>
+                    <p class="text-sm opacity-90 mt-2">การจัดการเวลาและการหมุนเวียนฐานในแต่ละวัน</p>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full border-collapse">
+                        <thead>
+                            <tr class="bg-blue-600 text-white">
+                                <th class="border border-blue-500 p-3 text-left">หมู่/เวลา</th>
+                                <th class="border border-blue-500 p-3 text-center">09.00-10.30</th>
+                                <th class="border border-blue-500 p-3 text-center">10.30-12.00</th>
+                                <th class="border border-blue-500 p-3 text-center">13.00-14.30</th>
+                                <th class="border border-blue-500 p-3 text-center">14.30-16.00</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="hover:bg-blue-50">
+                                <td class="border border-gray-300 p-3 font-semibold bg-gray-100">หมู่ 1</td>
+                                <td class="border border-gray-300 p-3 text-center">ฐาน 1</td>
+                                <td class="border border-gray-300 p-3 text-center">ฐาน 2</td>
+                                <td class="border border-gray-300 p-3 text-center">ฐาน 3</td>
+                                <td class="border border-gray-300 p-3 text-center">ฐาน 4</td>
+                            </tr>
+                            <tr class="hover:bg-green-50">
+                                <td class="border border-gray-300 p-3 font-semibold bg-gray-100">หมู่ 2</td>
+                                <td class="border border-gray-300 p-3 text-center">ฐาน 2</td>
+                                <td class="border border-gray-300 p-3 text-center">ฐาน 3</td>
+                                <td class="border border-gray-300 p-3 text-center">ฐาน 4</td>
+                                <td class="border border-gray-300 p-3 text-center">ฐาน 1</td>
+                            </tr>
+                            <tr class="hover:bg-yellow-50">
+                                <td class="border border-gray-300 p-3 font-semibold bg-gray-100">หมู่ 3</td>
+                                <td class="border border-gray-300 p-3 text-center">ฐาน 3</td>
+                                <td class="border border-gray-300 p-3 text-center">ฐาน 4</td>
+                                <td class="border border-gray-300 p-3 text-center">ฐาน 1</td>
+                                <td class="border border-gray-300 p-3 text-center">ฐาน 2</td>
+                            </tr>
+                            <tr class="hover:bg-red-50">
+                                <td class="border border-gray-300 p-3 font-semibold bg-gray-100">หมู่ 4</td>
+                                <td class="border border-gray-300 p-3 text-center">ฐาน 4</td>
+                                <td class="border border-gray-300 p-3 text-center">ฐาน 1</td>
+                                <td class="border border-gray-300 p-3 text-center">ฐาน 2</td>
+                                <td class="border border-gray-300 p-3 text-center">ฐาน 3</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="mt-6 bg-blue-50 rounded-lg p-4 border border-blue-200">
+                    <h3 class="font-bold text-blue-800 mb-2">📌 หมายเหตุ:</h3>
+                    <ul class="list-disc list-inside text-gray-700 space-y-1">
+                        <li>แต่ละฐานมีระยะเวลา 1.5 ชั่วโมง</li>
+                        <li>มีเวลาพัก 10 นาทีระหว่างฐาน</li>
+                        <li>ครูผู้สอนอยู่ประจำฐาน ลูกเสือหมุนเวียนไปแต่ละฐาน</li>
+                        <li>จำนวนลูกเสือต่อหมู่ประมาณ 8-10 คน</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="materials-section" class="section-content">
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <div class="bg-gradient-to-r from-orange-600 to-red-600 text-white p-6 rounded-lg mb-6">
+                    <h2 class="text-2xl font-bold flex items-center">
+                        <span class="bg-white/20 p-2 rounded-lg mr-3">📖</span>
+                        สื่อใบความรู้ลูกเสือ
+                    </h2>
+                    <p class="text-sm opacity-90 mt-2">เอกสารและสื่อการเรียนรู้แยกตามระดับชั้น</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-6 card-hover border-2 border-blue-300">
+                        <div class="flex items-center mb-4">
+                            <div class="bg-blue-600 text-white p-3 rounded-full mr-3">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-xl font-bold text-blue-800">ระดับ ม.1</h3>
+                        </div>
+                        <p class="text-gray-700 mb-4">สื่อใบความรู้พื้นฐานลูกเสือ วินัยและทักษะเบื้องต้น</p>
+                        <div class="space-y-2">
+                            <a href="https://drive.google.com/file/d/1HwYC1YWZNKAaWM_rAP_BoVKdFAyIHZrO/view?usp=sharing" target="_blank" rel="noopener noreferrer" class="download-btn download-btn-pdf w-full justify-center">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18.5,9L13,3.5V9H18.5M6,20V4H11V10H18V20H6Z"></path>
+                                </svg>
+                                <span>ดาวน์โหลด PDF</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-lg p-6 card-hover border-2 border-green-300">
+                        <div class="flex items-center mb-4">
+                            <div class="bg-green-600 text-white p-3 rounded-full mr-3">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-xl font-bold text-green-800">ระดับ ม.2</h3>
+                        </div>
+                        <p class="text-gray-700 mb-4">สื่อใบความรู้จิตสาธารณะและการบริการ</p>
+                        <div class="space-y-2">
+                            <a href="https://drive.google.com/file/d/1E_5RuQHGhJG_bQbE-Y3rUa0BKMOxMYZZ/view?usp=sharing" target="_blank" rel="noopener noreferrer" class="download-btn download-btn-pdf w-full justify-center">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18.5,9L13,3.5V9H18.5M6,20V4H11V10H18V20H6Z"></path>
+                                </svg>
+                                <span>ดาวน์โหลด PDF</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-6 card-hover border-2 border-purple-300">
+                        <div class="flex items-center mb-4">
+                            <div class="bg-purple-600 text-white p-3 rounded-full mr-3">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-xl font-bold text-purple-800">ระดับ ม.3</h3>
+                        </div>
+                        <p class="text-gray-700 mb-4">สื่อใบความรู้ภาวะผู้นำและการพัฒนา</p>
+                        <div class="space-y-2">
+                            <a href="https://drive.google.com/file/d/1IuxFE5FwkDq42SqGVw59f1XKkbhyGqDB/view?usp=sharing" target="_blank" rel="noopener noreferrer" class="download-btn download-btn-pdf w-full justify-center">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18.5,9L13,3.5V9H18.5M6,20V4H11V10H18V20H6Z"></path>
+                                </svg>
+                                <span>ดาวน์โหลด PDF</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-6 bg-orange-50 rounded-lg p-4 border border-orange-200">
+                    <h3 class="font-bold text-orange-800 mb-2">📌 การใช้งานสื่อ:</h3>
+                    <ul class="list-disc list-inside text-gray-700 space-y-1">
+                        <li>สื่อใบความรู้ครอบคลุมเนื้อหาทั้งหมดในหลักสูตร</li>
+                        <li>สามารถดาวน์โหลดและพิมพ์เพื่อแจกจ่ายให้ลูกเสือได้</li>
+                        <li>ควรศึกษาก่อนเข้าค่าย Block Course</li>
+                        <li>ใช้ประกอบการเรียนรู้ในแต่ละฐาน</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="lesson-plans-section" class="section-content">
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <div class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white p-6 rounded-lg mb-6">
+                    <h2 class="text-2xl font-bold flex items-center">
+                        <span class="bg-white/20 p-2 rounded-lg mr-3">📋</span>
+                        แผนการจัดการเรียนรู้
+                    </h2>
+                    <p class="text-sm opacity-90 mt-2">แผนการสอนและเอกสารสำหรับครูผู้สอนแยกตามระดับชั้น</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-6 card-hover border-2 border-blue-300">
+                        <div class="flex items-center mb-4">
+                            <div class="bg-blue-600 text-white p-3 rounded-full mr-3">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-xl font-bold text-blue-800">แผนการสอน ม.1</h3>
+                        </div>
+                        <p class="text-gray-700 mb-4">แผนการจัดการเรียนรู้สำหรับครูผู้สอนระดับ ม.1</p>
+                        <div class="space-y-2">
+                            <a href="https://docs.google.com/document/d/1dgSVcY1t5J6PwhLvISlHQMkfZOYoPppC/edit?usp=sharing&ouid=114907998310633074123&rtpof=true&sd=true" target="_blank" rel="noopener noreferrer" class="download-btn download-btn-word w-full justify-center">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18.5,9L13,3.5V9H18.5Z"></path>
+                                </svg>
+                                <span>เปิด Word Online</span>
+                            </a>
+                            <a href="https://drive.google.com/file/d/16OuLFWqz-jM4uobFqcufNFXIAucP4GPu/view?usp=sharing" target="_blank" rel="noopener noreferrer" class="download-btn download-btn-pdf w-full justify-center">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18.5,9L13,3.5V9H18.5M6,20V4H11V10H18V20H6Z"></path>
+                                </svg>
+                                <span>ดาวน์โหลด PDF</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-lg p-6 card-hover border-2 border-green-300">
+                        <div class="flex items-center mb-4">
+                            <div class="bg-green-600 text-white p-3 rounded-full mr-3">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-xl font-bold text-green-800">แผนการสอน ม.2</h3>
+                        </div>
+                        <p class="text-gray-700 mb-4">แผนการจัดการเรียนรู้สำหรับครูผู้สอนระดับ ม.2</p>
+                        <div class="space-y-2">
+                            <a href="https://docs.google.com/document/d/1t6WcvcA3vc0PxHquJJcmEfCgos7inDRf/edit?usp=drive_link&ouid=114907998310633074123&rtpof=true&sd=true" target="_blank" rel="noopener noreferrer" class="download-btn download-btn-word w-full justify-center">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18.5,9L13,3.5V9H18.5Z"></path>
+                                </svg>
+                                <span>เปิด Word Online</span>
+                            </a>
+                            <a href="https://drive.google.com/file/d/1MZ0annr1ETD7Nh3zV1Esn6z4hskPYvbj/view?usp=sharing" target="_blank" rel="noopener noreferrer" class="download-btn download-btn-pdf w-full justify-center">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18.5,9L13,3.5V9H18.5M6,20V4H11V10H18V20H6Z"></path>
+                                </svg>
+                                <span>ดาวน์โหลด PDF</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-6 card-hover border-2 border-purple-300">
+                        <div class="flex items-center mb-4">
+                            <div class="bg-purple-600 text-white p-3 rounded-full mr-3">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-xl font-bold text-purple-800">แผนการสอน ม.3</h3>
+                        </div>
+                        <p class="text-gray-700 mb-4">แผนการจัดการเรียนรู้สำหรับครูผู้สอนระดับ ม.3</p>
+                        <div class="space-y-2">
+                            <a href="https://docs.google.com/document/d/1hAT_N0QB4XW1wn97WbZiwU6vK1djByTO/edit?usp=drive_link&ouid=114907998310633074123&rtpof=true&sd=true" target="_blank" rel="noopener noreferrer" class="download-btn download-btn-word w-full justify-center">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18.5,9L13,3.5V9H18.5Z"></path>
+                                </svg>
+                                <span>เปิด Word Online</span>
+                            </a>
+                            <a href="https://drive.google.com/file/d/1_R9qGoyet9216LsyMF78PyiG0PBjK6XN/view?usp=sharing" target="_blank" rel="noopener noreferrer" class="download-btn download-btn-pdf w-full justify-center">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18.5,9L13,3.5V9H18.5M6,20V4H11V10H18V20H6Z"></path>
+                                </svg>
+                                <span>ดาวน์โหลด PDF</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-6 bg-indigo-50 rounded-lg p-4 border border-indigo-200">
+                    <h3 class="font-bold text-indigo-800 mb-2">📌 คำแนะนำสำหรับครู:</h3>
+                    <ul class="list-disc list-inside text-gray-700 space-y-1">
+                        <li>แผนการจัดการเรียนรู้ประกอบด้วยวัตถุประสงค์ กิจกรรม และการวัดผล</li>
+                        <li>สามารถดาวน์โหลดและปรับแต่งให้เหมาะกับบริบทของโรงเรียน</li>
+                        <li>ควรศึกษาแผนการสอนล่วงหน้าอย่างน้อย 1 สัปดาห์</li>
+                        <li>มีคำแนะนำการจัดกิจกรรมและเทคนิคการสอนในแต่ละฐาน</li>
+                        <li>ไฟล์ Word สามารถแก้ไขได้ / ไฟล์ PDF ใช้สำหรับอ่านและพิมพ์</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="quiz-section" class="section-content">
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <div class="bg-gradient-to-r from-green-600 to-teal-600 text-white p-6 rounded-lg mb-6">
+                    <h2 class="text-2xl font-bold flex items-center">
+                        <span class="bg-white/20 p-2 rounded-lg mr-3">📝</span>
+                        แบบทดสอบและการประเมินผล
+                    </h2>
+                    <p class="text-sm opacity-90 mt-2">แบบทดสอบก่อนและหลังเรียน พร้อมเฉลย</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-6 card-hover border-2 border-blue-300">
+                        <div class="bg-blue-600 text-white p-4 rounded-lg mb-4 text-center">
+                            <h3 class="text-lg font-bold">Pre-Test ม.1</h3>
+                            <p class="text-sm opacity-90">ทดสอบก่อนเรียน</p>
+                        </div>
+                        <ul class="space-y-2 text-gray-700">
+                            <li class="flex items-start">
+                                <span class="text-blue-600 mr-2">✓</span>
+                                <span>20 ข้อ (เลือกตอบ)</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-blue-600 mr-2">✓</span>
+                                <span>เนื้อหาพื้นฐานลูกเสือ</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-blue-600 mr-2">✓</span>
+                                <span>เวลา 30 นาที</span>
+                            </li>
+                        </ul>
+                        <button class="mt-4 w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors">
+                            เริ่มทำแบบทดสอบ
+                        </button>
+                    </div>
+
+                    <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-lg p-6 card-hover border-2 border-green-300">
+                        <div class="bg-green-600 text-white p-4 rounded-lg mb-4 text-center">
+                            <h3 class="text-lg font-bold">Post-Test ม.1</h3>
+                            <p class="text-sm opacity-90">ทดสอบหลังเรียน</p>
+                        </div>
+                        <ul class="space-y-2 text-gray-700">
+                            <li class="flex items-start">
+                                <span class="text-green-600 mr-2">✓</span>
+                                <span>25 ข้อ (เลือกตอบ + อัตนัย)</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-green-600 mr-2">✓</span>
+                                <span>ครอบคลุมทุกฐาน</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-green-600 mr-2">✓</span>
+                                <span>เวลา 45 นาที</span>
+                            </li>
+                        </ul>
+                        <button class="mt-4 w-full bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors">
+                            เริ่มทำแบบทดสอบ
+                        </button>
+                    </div>
+
+                    <div class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-6 card-hover border-2 border-purple-300">
+                        <div class="bg-purple-600 text-white p-4 rounded-lg mb-4 text-center">
+                            <h3 class="text-lg font-bold">แบบประเมินทักษะ</h3>
+                            <p class="text-sm opacity-90">ประเมินภาคปฏิบัติ</p>
+                        </div>
+                        <ul class="space-y-2 text-gray-700">
+                            <li class="flex items-start">
+                                <span class="text-purple-600 mr-2">✓</span>
+                                <span>การผูกเงื่อน</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-purple-600 mr-2">✓</span>
+                                <span>การปฐมพยาบาล</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-purple-600 mr-2">✓</span>
+                                <span>รูปแบบ Checklist</span>
+                            </li>
+                        </ul>
+                        <button class="mt-4 w-full bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg transition-colors">
+                            ดูแบบประเมิน
+                        </button>
+                    </div>
+
+                    <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-6 card-hover border-2 border-blue-300">
+                        <div class="bg-blue-600 text-white p-4 rounded-lg mb-4 text-center">
+                            <h3 class="text-lg font-bold">Pre-Test ม.2</h3>
+                            <p class="text-sm opacity-90">ทดสอบก่อนเรียน</p>
+                        </div>
+                        <ul class="space-y-2 text-gray-700">
+                            <li class="flex items-start">
+                                <span class="text-blue-600 mr-2">✓</span>
+                                <span>25 ข้อ (เลือกตอบ)</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-blue-600 mr-2">✓</span>
+                                <span>ภาวะผู้นำและจิตอาสา</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-blue-600 mr-2">✓</span>
+                                <span>เวลา 40 นาที</span>
+                            </li>
+                        </ul>
+                        <button class="mt-4 w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors">
+                            เริ่มทำแบบทดสอบ
+                        </button>
+                    </div>
+
+                    <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-lg p-6 card-hover border-2 border-green-300">
+                        <div class="bg-green-600 text-white p-4 rounded-lg mb-4 text-center">
+                            <h3 class="text-lg font-bold">Post-Test ม.2</h3>
+                            <p class="text-sm opacity-90">ทดสอบหลังเรียน</p>
+                        </div>
+                        <ul class="space-y-2 text-gray-700">
+                            <li class="flex items-start">
+                                <span class="text-green-600 mr-2">✓</span>
+                                <span>30 ข้อ (ผสม)</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-green-600 mr-2">✓</span>
+                                <span>ทักษะขั้นสูง</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-green-600 mr-2">✓</span>
+                                <span>เวลา 50 นาที</span>
+                            </li>
+                        </ul>
+                        <button class="mt-4 w-full bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors">
+                            เริ่มทำแบบทดสอบ
+                        </button>
+                    </div>
+
+                    <div class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-6 card-hover border-2 border-purple-300">
+                        <div class="bg-purple-600 text-white p-4 rounded-lg mb-4 text-center">
+                            <h3 class="text-lg font-bold">โครงการบริการ</h3>
+                            <p class="text-sm opacity-90">ประเมินโครงการ</p>
+                        </div>
+                        <ul class="space-y-2 text-gray-700">
+                            <li class="flex items-start">
+                                <span class="text-purple-600 mr-2">✓</span>
+                                <span>การนำเสนอ</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-purple-600 mr-2">✓</span>
+                                <span>การดำเนินงาน</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-purple-600 mr-2">✓</span>
+                                <span>ผลสัมฤทธิ์</span>
+                            </li>
+                        </ul>
+                        <button class="mt-4 w-full bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg transition-colors">
+                            ดูเกณฑ์การประเมิน
+                        </button>
+                    </div>
+                </div>
+
+                <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-gradient-to-br from-orange-50 to-orange-100 rounded-lg p-6 card-hover border-2 border-orange-300">
+                        <div class="bg-orange-600 text-white p-4 rounded-lg mb-4 text-center">
+                            <h3 class="text-lg font-bold">ข้อสอบ ม.3 (รวม)</h3>
+                            <p class="text-sm opacity-90">ทดสอบความรู้ภาพรวม</p>
+                        </div>
+                        <ul class="space-y-2 text-gray-700">
+                            <li class="flex items-start">
+                                <span class="text-orange-600 mr-2">✓</span>
+                                <span>35 ข้อ (ผสม)</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-orange-600 mr-2">✓</span>
+                                <span>ครอบคลุมทุกด้าน</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-orange-600 mr-2">✓</span>
+                                <span>เวลา 60 นาที</span>
+                            </li>
+                        </ul>
+                        <button class="mt-4 w-full bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded-lg transition-colors">
+                            เริ่มทำแบบทดสอบ
+                        </button>
+                    </div>
+
+                    <div class="bg-gradient-to-br from-red-50 to-red-100 rounded-lg p-6 card-hover border-2 border-red-300">
+                        <div class="bg-red-600 text-white p-4 rounded-lg mb-4 text-center">
+                            <h3 class="text-lg font-bold">โครงการมรดก</h3>
+                            <p class="text-sm opacity-90">ประเมินผลงาน ม.3</p>
+                        </div>
+                        <ul class="space-y-2 text-gray-700">
+                            <li class="flex items-start">
+                                <span class="text-red-600 mr-2">✓</span>
+                                <span>ความคิดสร้างสรรค์</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-red-600 mr-2">✓</span>
+                                <span>ความยั่งยืน</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-red-600 mr-2">✓</span>
+                                <span>การถ่ายทอด</span>
+                            </li>
+                        </ul>
+                        <button class="mt-4 w-full bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors">
+                            ดูเกณฑ์การประเมิน
+                        </button>
+                    </div>
+                </div>
+
+                <div class="mt-6 bg-green-50 rounded-lg p-4 border border-green-200">
+                    <h3 class="font-bold text-green-800 mb-2">📌 เกณฑ์การประเมิน:</h3>
+                    <ul class="list-disc list-inside text-gray-700 space-y-1">
+                        <li>Pre-Test ไม่นับคะแนน (ใช้วัดพื้นฐาน)</li>
+                        <li>Post-Test คิดเป็น 40% ของคะแนนรวม</li>
+                        <li>การประเมินทักษะปฏิบัติ 30%</li>
+                        <li>โครงการและการมีส่วนร่วม 30%</li>
+                        <li>ผ่านเกณฑ์ต้องได้ 60% ขึ้นไป</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="songs-games-section" class="section-content">
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <div class="bg-gradient-to-r from-pink-600 to-rose-600 text-white p-6 rounded-lg mb-6">
+                    <h2 class="text-2xl font-bold flex items-center">
+                        <span class="bg-white/20 p-2 rounded-lg mr-3">🎵</span>
+                        เพลงและเกมลูกเสือ
+                    </h2>
+                    <p class="text-sm opacity-90 mt-2">กิจกรรมสันทนาการและเกมสร้างความสามัคคี</p>
+                </div>
+
+                <div class="mb-8">
+                    <h3 class="text-2xl font-bold text-pink-800 mb-4 flex items-center">
+                        <span class="mr-2">🎼</span> เพลงลูกเสือ
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="bg-pink-50 rounded-lg p-6 card-hover border border-pink-200">
+                            <h4 class="text-xl font-bold text-pink-800 mb-2">เพลง รักลูกเสือไทย</h4>
+                            <p class="text-gray-600 mb-3">เพลงประจำกองลูกเสือไทย</p>
+                            <div class="bg-white rounded p-4 text-sm text-gray-700">
+                                <p class="mb-2"><strong>ท่อน 1:</strong></p>
+                                <p>รักลูกเสือไทย เป็นหนึ่งเดียว<br>
+                                แม้จะแยกไกล ใจก็ใกล้ชิด<br>
+                                เพื่อนพี่น้อง ร่วมใจเป็นหนึ่ง<br>
+                                ก้าวไปข้างหน้า ไม่ย่อท้อ</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-blue-50 rounded-lg p-6 card-hover border border-blue-200">
+                            <h4 class="text-xl font-bold text-blue-800 mb-2">เพลง เชิญไฟ</h4>
+                            <p class="text-gray-600 mb-3">เพลงสำหรับกิจกรรมรอบกองไฟ</p>
+                            <div class="bg-white rounded p-4 text-sm text-gray-700">
+                                <p class="mb-2"><strong>เนื้อเพลง:</strong></p>
+                                <p>เชิญไฟ เชิญไฟ มาลุกโชน<br>
+                                ส่องแสงสว่างไสว ในค่ำคืน<br>
+                                ลูกเสือมาชุมนุม รอบกองไฟ<br>
+                                ร่วมใจเป็นหนึ่งเดียว</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-green-50 rounded-lg p-6 card-hover border border-green-200">
+                            <h4 class="text-xl font-bold text-green-800 mb-2">เพลง สวัสดีเพื่อน</h4>
+                            <p class="text-gray-600 mb-3">เพลงทักทายและอำลา</p>
+                            <div class="bg-white rounded p-4 text-sm text-gray-700">
+                                <p class="mb-2"><strong>เนื้อเพลง:</strong></p>
+                                <p>สวัสดีเพื่อน สวัสดี<br>
+                                ขอให้มีความสุข ทุกทุกวัน<br>
+                                แม้เราจะแยกทาง ใจยังใกล้กัน<br>
+                                พบกันใหม่ ไม่นานเกินรอ</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-purple-50 rounded-lg p-6 card-hover border border-purple-200">
+                            <h4 class="text-xl font-bold text-purple-800 mb-2">เพลง เราคือลูกเสือ</h4>
+                            <p class="text-gray-600 mb-3">เพลงสร้างขวัญกำลังใจ</p>
+                            <div class="bg-white rounded p-4 text-sm text-gray-700">
+                                <p class="mb-2"><strong>เนื้อเพลง:</strong></p>
+                                <p>เราคือลูกเสือ ผู้กล้าหาญ<br>
+                                ไม่เกรงอันตราย ไม่หวั่นไหว<br>
+                                ทำความดี ช่วยเหลือผู้อื่น<br>
+                                ด้วยใจที่มั่นคง</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-2xl font-bold text-rose-800 mb-4 flex items-center">
+                        <span class="mr-2">🎮</span> เกมลูกเสือ
+                    </h3>
+                    <div class="space-y-4">
+                        <div class="bg-gray-50 rounded-lg p-6 card-hover border border-gray-200">
+                            <h4 class="text-xl font-bold text-gray-800 mb-2">เกม ฮักกี้เย็นยา</h4>
+                            <p class="font-semibold text-gray-700">อุปกรณ์:</p>
+                            <p class="text-gray-600 mb-3">ผ้าเช็ดหน้า 2 ผืน</p>
+                            <p class="font-semibold text-gray-700">วิธีการเล่น:</p>
+                            <ul class="list-disc list-inside text-gray-600 space-y-1">
+                                <li>เขียนวงกลมใหญ่และลากเส้นผ่านศูนย์กลาง</li>
+                                <li>แบ่งผู้เล่นเป็น 2 ทีม ยืนฝั่งละครึ่งวงกลมหันหน้าออก</li>
+                                <li>คนแรกของแต่ละทีมเริ่มวิ่งรอบวงกลมพร้อมถือผ้า</li>
+                                <li>เมื่อวิ่งครบรอบให้ส่งผ้าให้คนถัดไป</li>
+                                <li>ฝ่ายที่ใช้ผ้าตีฝ่ายตรงข้ามได้ก่อนเป็นผู้ชนะ</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="bg-gray-50 rounded-lg p-6 card-hover border border-gray-200">
+                            <h4 class="text-xl font-bold text-gray-800 mb-2">เกม เคลื่อนย้ายผู้ป่วย</h4>
+                            <p class="font-semibold text-gray-700">วิธีการเล่น:</p>
+                            <ul class="list-disc list-inside text-gray-600 space-y-1">
+                                <li>จัดแถวเป็นแถวตอน</li>
+                                <li>คัดเลือกคนแข็งแรง 2 คนในแต่ละแถวออกมาทำ "แคร่" ด้วยมือ 4 ข้าง</li>
+                                <li>ให้คนที่เหลือในแถวนั่งบนแคร่ทีละคน แล้วเคลื่อนย้ายไปที่เส้นชัย</li>
+                                <li>เมื่อส่งถึงแล้ว ให้วิ่งกลับมารับคนต่อไป</li>
+                                <li>หมู่ที่เคลื่อนย้ายคนได้ครบหมดก่อนเป็นผู้ชนะ</li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-gray-50 rounded-lg p-6 card-hover border border-gray-200">
+                            <h4 class="text-xl font-bold text-gray-800 mb-2">เกม หาพิศ</h4>
+                            <p class="font-semibold text-gray-700">อุปกรณ์:</p>
+                            <p class="text-gray-600 mb-3">เข็มทิศ, กระดาษแข็ง, ฝาขวดน้ำที่เขียนองศาไว้</p>
+                            <p class="font-semibold text-gray-700">วิธีการเล่น:</p>
+                            <ul class="list-disc list-inside text-gray-600 space-y-1">
+                                <li>เข้าแถวตอนตามหมู่ ห่างจากจุดวางเข็มทิศ 8 เมตร</li>
+                                <li>เมื่อได้ยินสัญญาณ นายหมู่จะวิ่งไปหยิบฝาขวดน้ำ 1 อัน</li>
+                                <li>ดูองศาบนฝา แล้วใช้เข็มทิศวางฝานั้นลงบนกระดาษแข็งให้ตรงกับทิศตามองศาที่กำหนด</li>
+                                <li>วิ่งกลับมาแตะมือคนต่อไป คนต่อไปทำเช่นเดียวกันจนครบ</li>
+                                <li>หมู่ที่ทำได้ถูกต้องมากที่สุดเป็นผู้ชนะ</li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-gray-50 rounded-lg p-6 card-hover border border-gray-200">
+                            <h4 class="text-xl font-bold text-gray-800 mb-2">เกม วิบาก (วิ่งสามขา)</h4>
+                            <p class="font-semibold text-gray-700">วิธีการเล่น:</p>
+                            <ul class="list-disc list-inside text-gray-600 space-y-1">
+                                <li>เข้าแถวหน้ากระดาน 2 แถว จับคู่กัน</li>
+                                <li>คนแถวหลังยกขาขวาขึ้น ให้คนแถวหน้าจับไว้</li>
+                                <li>มือทั้งสองของคนแถวหลังจับบ่าคนข้างหน้า</li>
+                                <li>เมื่อได้ยินสัญญาณ ให้แต่ละคู่วิ่งไปยังเส้นชัยในลักษณะ 3 ขา</li>
+                                <li>ห้ามแยกออกจากกัน หากล้มให้เริ่มใหม่จากจุดที่ล้ม</li>
+                                <li>คู่ที่ถึงเส้นชัยก่อนเป็นผู้ชนะ</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-gray-800 text-white py-8 px-4 mt-12">
+        <div class="max-w-6xl mx-auto text-center">
+            <div class="flex items-center justify-center mb-4">
+                <svg class="w-6 h-6 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2L13.09 8.26L22 9L13.09 9.74L12 16L10.91 9.74L2 9L10.91 8.26L12 2Z"/>
+                </svg>
+                <h3 class="text-xl font-semibold">โรงเรียนสา</h3>
+            </div>
+            <p class="text-gray-300 mb-2">กำหนดการเรียนรู้ลูกเสือแบบ Block Course</p>
+            <p class="text-gray-400 text-sm">ลูกเสือสามัญรุ่นใหญ่ ม.1 ม.2 ม.3 • Block Course 3 วัน ไป-กลับ</p>
+        </div>
+    </footer>
+
+    <script>
+        // ฟังก์ชันสำหรับสลับเมนูหลัก
+        function showSection(sectionId) {
+            // ซ่อนทุก Section
+            document.querySelectorAll('.section-content, #schedule-tabs').forEach(el => {
+                el.style.display = 'none';
+            });
+            
+            // อัปเดตสไตล์ปุ่มเมนูหลัก
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('nav-btn-active');
+                btn.classList.add('nav-btn-inactive');
+            });
+            
+            // แสดง Section ที่เลือก
+            if (sectionId === 'schedule') {
+                document.getElementById('schedule-tabs').style.display = 'block';
+                document.getElementById('schedule-section').style.display = 'block';
+                // และแสดง grade-1 ที่เป็น default
+                showGrade(1); 
+            } else {
+                document.getElementById(`${sectionId}-section`).style.display = 'block';
+            }
+            
+            // ทำให้ปุ่มที่เลือก active
+            document.getElementById(`nav-${sectionId}`).classList.add('nav-btn-active');
+            document.getElementById(`nav-${sectionId}`).classList.remove('nav-btn-inactive');
+            
+            // Scroll to top of content area
+            window.scrollTo({ top: document.querySelector('header').offsetHeight - 20, behavior: 'smooth' });
+        }
+
+        // ฟังก์ชันสำหรับสลับชั้นปี
+        function showGrade(grade) {
+            // ซ่อนทุก Grade
+            document.querySelectorAll('.grade-content').forEach(content => {
+                content.style.display = 'none';
+            });
+            
+            // แสดง Grade ที่เลือก
+            document.getElementById(`grade-${grade}`).style.display = 'block';
+            
+            // อัปเดตสไตล์ปุ่ม Tab
+            document.querySelectorAll('.tab-btn').forEach(tab => {
+                tab.classList.remove('tab-btn-active');
+                tab.classList.add('bg-gray-100', 'text-gray-700', 'hover:bg-gray-200');
+            });
+            
+            // ทำให้ Tab ที่เลือก active
+            const activeTab = document.getElementById(`tab-${grade}`);
+            activeTab.classList.add('tab-btn-active');
+            activeTab.classList.remove('bg-gray-100', 'text-gray-700', 'hover:bg-gray-200');
+
+            // ตั้งค่าภาคเรียนที่ 1 เป็น default เมื่อเปลี่ยนชั้นปี
+            showTerm(grade, 1);
+        }
+
+        // ฟังก์ชันใหม่สำหรับสลับภาคเรียน
+        function showTerm(grade, term) {
+            // ซ่อนเนื้อหาภาคเรียนทั้งหมดของชั้นปีนั้นๆ
+            document.querySelectorAll(`#grade-${grade} .term-content`).forEach(content => {
+                content.style.display = 'none';
+            });
+
+            // แสดงเนื้อหาภาคเรียนที่เลือก
+            document.getElementById(`grade-${grade}-term-${term}`).style.display = 'grid'; // ใช้ grid ตามที่ออกแบบไว้
+
+            // อัปเดตสไตล์ปุ่ม Tab ภาคเรียน
+            document.querySelectorAll(`#grade-${grade} .term-tab`).forEach(tab => {
+                tab.classList.remove('term-tab-active');
+                tab.classList.add('term-tab-inactive');
+            });
+
+            // ทำให้ Tab ภาคเรียนที่เลือก active
+            document.getElementById(`grade-${grade}-tab-${term}`).classList.add('term-tab-active');
+            document.getElementById(`grade-${grade}-tab-${term}`).classList.remove('term-tab-inactive');
+        }
+
+        // ตั้งค่าเริ่มต้นเมื่อโหลดหน้า
+        document.addEventListener('DOMContentLoaded', function() {
+            showSection('schedule');
+            showGrade(1);
+            showTerm(1, 1);
+        });
+    </script>
+</body>
+</html>
