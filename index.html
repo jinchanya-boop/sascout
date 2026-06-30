@@ -1,0 +1,1055 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>กำหนดการเรียนรู้ลูกเสือ Block Course (K-Minimal)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            box-sizing: border-box;
+            font-family: 'Noto Sans Thai', sans-serif;
+            /* สีพื้นหลังสไตล์ K-Minimal (อบอุ่น) */
+            background-color: #fdfcfb; /* Slightly warmer than bg-stone-50 */
+        }
+        
+        .gradient-header {
+            /* ใช้ Gradient เดิม แต่ดูดีบนพื้นหลังใหม่ */
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 50%, #06b6d4 100%);
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-5px);
+            /* เงาที่นุ่มนวลขึ้น */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        /* สไตล์ปุ่มเมนูหลัก (Active) */
+        .nav-btn-active {
+            background-color: #2563eb; /* blue-600 */
+            color: white;
+            box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2), 0 2px 4px -1px rgba(37, 99, 235, 0.1);
+        }
+        
+        /* สไตล์ปุ่มเมนูหลัก (Inactive) */
+        .nav-btn-inactive {
+            background-color: #ffffff;
+            color: #374151; /* gray-700 */
+            border: 1px solid #e5e7eb; /* gray-200 */
+        }
+        .nav-btn-inactive:hover {
+            background-color: #f9fafb; /* gray-50 */
+        }
+        
+        /* สไตล์ปุ่มเลือกชั้นปี (Active) */
+        .tab-btn-active {
+            background: linear-gradient(135deg, #059669, #10b981);
+            color: white;
+            font-weight: 600;
+        }
+
+        /* สไตล์ปุ่มเลือกภาคเรียน (Active) */
+        .term-tab-active {
+            border-bottom: 3px solid #1e3a8a; /* dark blue */
+            color: #1e3a8a;
+            font-weight: 600;
+        }
+        
+        .term-tab-inactive {
+            color: #6b7280; /* gray-500 */
+        }
+        .term-tab-inactive:hover {
+            color: #111827; /* gray-900 */
+        }
+
+        /* ซ่อน/แสดงเนื้อหา */
+        .section-content, .grade-content, .term-content {
+            display: none;
+        }
+        .active-section, .active-grade, .active-term {
+            display: block;
+        }
+            /* สไตล์สำหรับปุ่มดาวน์โหลด */
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        
+        .download-btn-word {
+            background: linear-gradient(135deg, #2b579a, #3b82f6);
+            color: white;
+        }
+        
+        .download-btn-word:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 12px -3px rgba(43, 87, 154, 0.3);
+        }
+        
+        .download-btn-pdf {
+            background: linear-gradient(135deg, #dc2626, #ef4444);
+            color: white;
+        }
+        
+        .download-btn-pdf:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 12px -3px rgba(220, 38, 38, 0.3);
+        }
+</style>
+</head>
+<body class="bg-stone-50 min-h-screen">
+    <header class="gradient-header text-white py-8 px-4">
+        <div class="max-w-6xl mx-auto text-center">
+            <div class="flex items-center justify-center mb-4">
+                <div class="bg-white/20 p-3 rounded-full mr-4">
+                    <img src="https://img2.pic.in.th/pic/sa1.png" alt="โลโก้โรงเรียนสา" class="w-12 h-12 object-contain" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                    <svg class="w-8 h-8 hidden" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2L13.09 8.26L22 9L13.09 9.74L12 16L10.91 9.74L2 9L10.91 8.26L12 2Z"/>
+                    </svg>
+                </div>
+                <h1 class="text-3xl md:text-4xl font-bold">กำหนดการเรียนรู้ลูกเสือ Block Course</h1>
+            </div>
+            <p class="text-xl opacity-90">โรงเรียนสา ลูกเสือสามัญรุ่นใหญ่ ม.1 ม.2 ม.3</p>
+            <p class="text-lg opacity-80 mt-2">Block Course 3 วัน ไป-กลับ</p>
+        </div>
+    </header>
+
+    <div class="max-w-6xl mx-auto px-4 -mt-8 relative z-10 mb-6">
+    <div class="bg-white rounded-xl shadow-lg p-3 border border-gray-100">
+        <div class="flex flex-wrap gap-2 justify-center">
+            <button onclick="showSection('schedule')" id="nav-schedule" class="nav-btn nav-btn-active px-4 py-2 rounded-full font-medium transition-all duration-300">
+                📅 กำหนดการเรียนรู้
+            </button>
+            <button onclick="showSection('rotation')" id="nav-rotation" class="nav-btn nav-btn-inactive px-4 py-2 rounded-full font-medium transition-all duration-300">
+                🔄 ตารางเวียนฐาน
+            </button>
+            <button onclick="showSection('materials')" id="nav-materials" class="nav-btn nav-btn-inactive px-4 py-2 rounded-full font-medium transition-all duration-300">
+                📖 สื่อใบความรู้
+            </button>
+            <button onclick="showSection('lesson-plans')" id="nav-lesson-plans" class="nav-btn nav-btn-inactive px-4 py-2 rounded-full font-medium transition-all duration-300">
+                📋 แผนการจัดการเรียนรู้
+            </button>
+            <button onclick="showSection('quiz')" id="nav-quiz" class="nav-btn nav-btn-inactive px-4 py-2 rounded-full font-medium transition-all duration-300">
+                📝 แบบทดสอบ
+            </button>
+            <button onclick="showSection('songs-games')" id="nav-songs-games" class="nav-btn nav-btn-inactive px-4 py-2 rounded-full font-medium transition-all duration-300">
+                🎵 เพลงและเกม
+            </button>
+            <!-- ✨ เพิ่มเมนูใหม่ตรงนี้ -->
+            <a href="https://jinchanya-boop.github.io/Evaluation/" target="_blank" rel="noopener noreferrer" id="nav-evaluation" class="nav-btn nav-btn-inactive px-4 py-2 rounded-full font-medium transition-all duration-300 inline-block">
+    ⭐ แบบประเมินกิจกรรม
+            </a>
+            <a href="https://jinchanya-boop.github.io/scout/" target="_blank" rel="noopener noreferrer" id="nav-record" class="nav-btn nav-btn-inactive px-4 py-2 rounded-full font-medium transition-all duration-300 inline-block">
+                📋 แบบบันทึกกิจกรรม
+            </a>
+        </div>
+    </div>
+</div>
+
+    <div id="schedule-tabs" class="max-w-6xl mx-auto px-4 mb-6 active-section">
+        <div class="bg-white rounded-lg shadow-md p-2 flex flex-wrap gap-2">
+            <button onclick="showGrade(1)" id="tab-1" class="tab-btn flex-1 min-w-0 px-4 py-3 rounded-md font-medium transition-all duration-300 tab-btn-active">
+                📚 ม.1 - พื้นฐานวินัย
+            </button>
+            <button onclick="showGrade(2)" id="tab-2" class="tab-btn flex-1 min-w-0 px-4 py-3 rounded-md font-medium transition-all duration-300 bg-gray-100 text-gray-700 hover:bg-gray-200">
+                🎯 ม.2 - จิตสาธารณะ
+            </button>
+            <button onclick="showGrade(3)" id="tab-3" class="tab-btn flex-1 min-w-0 px-4 py-3 rounded-md font-medium transition-all duration-300 bg-gray-100 text-gray-700 hover:bg-gray-200">
+                👑 ม.3 - ความเป็นผู้นำ
+            </button>
+        </div>
+    </div>
+
+    <div class="max-w-6xl mx-auto px-4 py-4">
+
+        <div id="schedule-section" class="section-content active-section">
+            
+            <div id="grade-1" class="grade-content active-grade">
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                    <div class="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-6">
+                        <h2 class="text-2xl font-bold flex items-center">
+                            <span class="bg-white/20 p-2 rounded-lg mr-3">📚</span>
+                            ระดับชั้น ม.1 - พื้นฐานวินัยและทักษะ
+                        </h2>
+                    </div>
+                    <div class="border-b border-gray-200">
+                        <nav class="flex justify-center gap-6 -mb-px px-6">
+                            <button onclick="showTerm(1, 1)" id="grade-1-tab-1" class="term-tab term-tab-active py-4 px-1 text-center">ภาคเรียนที่ 1</button>
+                            <button onclick="showTerm(1, 2)" id="grade-1-tab-2" class="term-tab term-tab-inactive py-4 px-1 text-center">ภาคเรียนที่ 2</button>
+                        </nav>
+                    </div>
+                    
+                    <div id="grade-1-term-1" class="term-content active-term p-6 grid md:grid-cols-2 gap-6">
+                        <div class="bg-amber-50 border border-amber-200 rounded-lg p-5">
+                            <span class="inline-block bg-amber-200 text-amber-800 text-sm font-medium px-3 py-1 rounded-full mb-3">☀️ วันที่ 1 : ทักษะระเบียบแถว</span>
+                            <ul class="space-y-3">
+                                <li class="flex items-center"><span class="mr-2">🚶</span> ระเบียบแถว (บุคคลท่ามือเปล่า)</li>
+                                <li class="flex items-center"><span class="mr-2">🛶</span> ระเบียบแถว (บุคคลท่ามีอาวุธ)</li>
+                                <li class="flex items-center"><span class="mr-2">🗣️</span> การใช้สัญญาณมือ และสัญญาณนกหวีด</li>
+                                <li class="flex items-center"><span class="mr-2">🎒</span> สาธิตการบรรจุเครื่องหลัง (เดินทางไกล)</li>
+                            </ul>
+                        </div>
+                        <div class="bg-emerald-50 border border-emerald-200 rounded-lg p-5">
+                            <span class="inline-block bg-emerald-200 text-emerald-800 text-sm font-medium px-3 py-1 rounded-full mb-3">☀️ วันที่ 2 : ทักษะบุกเบิก</span>
+                            <ul class="space-y-3">
+                                <li class="flex items-center"><span class="mr-2">🏕️</span> การกาง-รื้อ-เก็บ-รักษา เต็นท์</li>
+                                <li class="flex items-center"><span class="mr-2">🔥</span> การก่อไฟกลางแจ้งและการปรุงอาหาร</li>
+                                <li class="flex items-center"><span class="mr-2">🧭</span> แผนที่และเข็มทิศ (การหาทิศ)</li>
+                                <li class="flex items-center"><span class="mr-2">🪢</span> เงื่อนที่ใช้ในการบุกเบิก (9 เงื่อน)</li>
+                                <li class="flex items-center"><span class="mr-2">🩹</span> การปฐมพยาบาล และความปลอดภัย</li>
+                                <li class="flex items-center"><span class="mr-2">✨</span> ประดับเครื่องหมายลูกเสือโลก</li>
+                                <li class="flex items-center"><span class="mr-2">🏁</span> ปิดกองรวม</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div id="grade-1-term-2" class="term-content p-6 grid md:grid-cols-3 gap-6">
+                        <div class="bg-rose-50 border border-rose-200 rounded-lg p-5">
+                            <span class="inline-block bg-rose-200 text-rose-800 text-sm font-medium px-3 py-1 rounded-full mb-3">☀️ วันที่ 1 : ปฐมนิเทศ</span>
+                            <ul class="space-y-3">
+                                <li class="flex items-center"><span class="mr-2">🤝</span> ปฐมนิเทศ (การปฏิบัติตนในระบบหมู่)</li>
+                                <li class="flex items-center"><span class="mr-2">⭐</span> การเรียนเครื่องหมายพิเศษ</li>
+                            </ul>
+                        </div>
+                        <div class="bg-amber-50 border border-amber-200 rounded-lg p-5">
+                            <span class="inline-block bg-amber-200 text-amber-800 text-sm font-medium px-3 py-1 rounded-full mb-3">☀️ วันที่ 2 : นักผจญภัย</span>
+                            <ul class="space-y-3">
+                                <li class="flex items-center"><span class="mr-2">🗺️</span> วิชานักผจญภัย (เดินทางไกล)</li>
+                                <li class="flex items-center"><span class="mr-2">🏞️</span> การตั้งค่ายพักแรม, เหตุการณ์เดินทางไกล</li>
+                                <li class="flex items-center"><span class="mr-2">🏕️</span> วิชาผู้จัดการอยู่ค่ายพักแรม</li>
+                            </ul>
+                        </div>
+                        <div class="bg-emerald-50 border border-emerald-200 rounded-lg p-5">
+                            <span class="inline-block bg-emerald-200 text-emerald-800 text-sm font-medium px-3 py-1 rounded-full mb-3">☀️ วันที่ 3 : ธรรมชาติศึกษา</span>
+                            <ul class="space-y-3">
+                                <li class="flex items-center"><span class="mr-2">☀️</span> วิชาลม ฟ้า อากาศและฤดูกาล</li>
+                                <li class="flex items-center"><span class="mr-2">🌳</span> วิชาผู้พิทักษ์ป่า</li>
+                                <li class="flex items-center"><span class="mr-2">✨</span> การประดับเครื่องหมายลูกเสือโลก</li>
+                                <li class="flex items-center"><span class="mr-2">🔄</span> ทบทวนกิจกรรมและทดสอบ</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="grade-2" class="grade-content">
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                    <div class="bg-gradient-to-r from-green-600 to-green-700 text-white p-6">
+                        <h2 class="text-2xl font-bold flex items-center">
+                            <span class="bg-white/20 p-2 rounded-lg mr-3">🎯</span>
+                            ระดับชั้น ม.2 - จิตสาธารณะและการสำรวจ
+                        </h2>
+                    </div>
+                    <div class="border-b border-gray-200">
+                        <nav class="flex justify-center gap-6 -mb-px px-6">
+                            <button onclick="showTerm(2, 1)" id="grade-2-tab-1" class="term-tab term-tab-active py-4 px-1 text-center">ภาคเรียนที่ 1</button>
+                            <button onclick="showTerm(2, 2)" id="grade-2-tab-2" class="term-tab term-tab-inactive py-4 px-1 text-center">ภาคเรียนที่ 2</button>
+                        </nav>
+                    </div>
+                    
+                    <div id="grade-2-term-1" class="term-content active-term p-6 grid md:grid-cols-2 gap-6">
+                        <div class="bg-amber-50 border border-amber-200 rounded-lg p-5">
+                            <span class="inline-block bg-amber-200 text-amber-800 text-sm font-medium px-3 py-1 rounded-full mb-3">☀️ วันที่ 1 : พฤหัสบดี 2 ก.ค. 69</span>
+                            <ul class="space-y-3">
+                                <li class="flex items-start"><span class="mr-2 mt-1">🕒</span> <div><strong>07.00-08.00</strong> ลงทะเบียน <br><span class="text-xs text-gray-500">ครู: น.ส.หทัยกาญจน์, น.ส.กัญญา, น.ส.มาลินี</span></div></li>
+                                <li class="flex items-start"><span class="mr-2 mt-1">🤝</span> <div><strong>08.00-09.15</strong> ปฐมนิเทศ (ระเบียบแถว, ขั้นตอนเตรียมสวนสนาม) <br><span class="text-xs text-gray-500">ครู: นายชัยวัฒน์, นายศุภฤกษ์, นายวิธวศิน</span></div></li>
+                                <li class="flex items-start"><span class="mr-2 mt-1">🏛️</span> <div><strong>09.15-10.10</strong> หน้าที่พลเมือง (ประวัติการลูกเสือไทย, วิธีดำเนินการของขบวนการลูกเสือ) <br><span class="text-xs text-gray-500">ครู: นายกัมพล, นายธัชชัย, นายโสภณวิชญ์</span></div></li>
+                                <li class="flex items-start"><span class="mr-2 mt-1">❤️</span> <div><strong>10.10-11.05</strong> อุดมคติ (กฎ และคำปฏิญาณ, เสริมวิชากิจกรรมที่สนใจเป็นพิเศษ) <br><span class="text-xs text-gray-500">ครู: นางนงคราญ, น.ส.นิธิกานต์</span></div></li>
+                                <li class="flex items-start"><span class="mr-2 mt-1">🏋️</span> <div><strong>11.05-12.00</strong> สมรรถภาพทางกาย (ทดสอบสมรรถภาพทางกาย) <br><span class="text-xs text-gray-500">ครู: นายประทีป, น.ส.อนุสรา</span></div></li>
+                                <li class="flex items-start"><span class="mr-2 mt-1">🩹</span> <div><strong>12.55-13.50</strong> บริการ (ปฐมพยาบาล) <br><span class="text-xs text-gray-500">ครู: นายประทีป, น.ส.อนุสรา</span></div></li>
+                                <li class="flex items-start"><span class="mr-2 mt-1">🌿</span> <div><strong>13.50-14.45</strong> สิ่งแวดล้อม (ความหมาย, วิธีการอนุรักษ์สัตว์-พืช, การอนุรักษ์ธรรมชาติ) <br><span class="text-xs text-gray-500">ครู: น.ส.หทัยกาญจน์, น.ส.กัญญา, น.ส.มาลินี</span></div></li>
+                                <li class="flex items-start"><span class="mr-2 mt-1">🗺️</span> <div><strong>14.45-15.40</strong> การเดินทางสำรวจ (หลักในการเดินทางด้วยการเดินเท้า, การจัดอาหารและอุปกรณ์เวชภัณฑ์, การทำแบบรายงานสำรวจ) <br><span class="text-xs text-gray-500">ครู: นายกัมพล, นายธัชชัย, นายโสภณวิชญ์</span></div></li>
+                                <li class="flex items-start"><span class="mr-2 mt-1">🚶</span> <div><strong>15.40-16.35</strong> ซ้อมรวมสวนสนาม <br><span class="text-xs text-gray-500">ครู: ผกก ทุกท่าน</span></div></li>
+                                <li class="flex items-start"><span class="mr-2 mt-1">💡</span> <div><strong>16.35-17.00</strong> กิจกรรมที่สนใจเป็นพิเศษ (แนวทางในการเลือกปฏิบัติกิจกรรม) <br><span class="text-xs text-gray-500">ครู: นางนงคราญ, น.ส.นิธิกานต์</span></div></li>
+                            </ul>
+                        </div>
+                        <div class="bg-emerald-50 border border-emerald-200 rounded-lg p-5">
+                            <span class="inline-block bg-emerald-200 text-emerald-800 text-sm font-medium px-3 py-1 rounded-full mb-3">☀️ วันที่ 2 : ศุกร์ 3 ก.ค. 69</span>
+                            <ul class="space-y-3">
+                                <li class="flex items-start"><span class="mr-2 mt-1">🕒</span> <div><strong>07.00-08.00</strong> ลงทะเบียน <br><span class="text-xs text-gray-500">ครู: น.ส.หทัยกาญจน์, น.ส.กัญญา, น.ส.มาลินี</span></div></li>
+                                <li class="flex items-start"><span class="mr-2 mt-1">🚶</span> <div><strong>08.00-09.15</strong> พิธีสวนสนาม <br><span class="text-xs text-gray-500">ครู: ผกก ทุกท่าน</span></div></li>
+                                <li class="flex items-start"><span class="mr-2 mt-1">🏋️</span> <div><strong>10.10-11.05</strong> สมรรถภาพทางกาย (ความหมายชนิดและโทษของสิ่งเสพติด) <br><span class="text-xs text-gray-500">ครู: นายประทีป, น.ส.อนุสรา</span></div></li>
+                                <li class="flex items-start"><span class="mr-2 mt-1">🤝</span> <div><strong>11.05-12.00</strong> บริการ (ความหมายของชุมชน การบริการและการพัฒนาชุมชน, การบริการชุมชนตามกฎของลูกเสือ) <br><span class="text-xs text-gray-500">ครู: นายชัยวัฒน์, นายศุภฤกษ์, นายวิธวศิน</span></div></li>
+                                <li class="flex items-start"><span class="mr-2 mt-1">📸</span> <div><strong>12.55-13.50</strong> การแสดงออกทางศิลปะ (การถ่ายภาพ) <br><span class="text-xs text-gray-500">ครู: นายกัมพล, นายโสภณวิชญ์</span></div></li>
+                                <li class="flex items-start"><span class="mr-2 mt-1">🎨</span> <div><strong>13.50-14.45</strong> การแสดงออกทางศิลปะ (งานทัศนศิลป์) <br><span class="text-xs text-gray-500">ครู: นายชัยวัฒน์, นายศุภฤกษ์</span></div></li>
+                                <li class="flex items-start"><span class="mr-2 mt-1">❤️</span> <div><strong>14.45-15.40</strong> อุดมคติ (อาราธนาศีล-ธรรม-พระปริตร, หลักสำคัญใพระพุทธศาสนา, กิจกรรมที่ใช้สติปัญญา) <br><span class="text-xs text-gray-500">ครู: นายธัชชัย, น.ส.กัญญา</span></div></li>
+                                <li class="flex items-start"><span class="mr-2 mt-1">🎭</span> <div><strong>15.40-16.35</strong> การแสดงออกทางศิลปะ (ศิลปการแสดง) <br><span class="text-xs text-gray-500">ครู: น.ส.หทัยกาญจน์, น.ส.มาลินี</span></div></li>
+                                <li class="flex items-start"><span class="mr-2 mt-1">💡</span> <div><strong>16.35-17.00</strong> กิจกรรมที่สนใจเป็นพิเศษ (หลักเกณฑ์และวิธีการปฏิบัติกิจกรรม) <br><span class="text-xs text-gray-500">ครู: นางนงคราญ, น.ส.นิธิกานต์</span></div></li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div id="grade-2-term-2" class="term-content p-6 grid md:grid-cols-3 gap-6">
+                        <div class="bg-rose-50 border border-rose-200 rounded-lg p-5">
+                            <span class="inline-block bg-rose-200 text-rose-800 text-sm font-medium px-3 py-1 rounded-full mb-3">☀️ วันที่ 1 : ทักษะกาย</span>
+                            <ul class="space-y-3">
+                                <li class="flex items-center"><span class="mr-2">🤝</span> ปฐมนิเทศ (เครื่องหมายวิชาพิเศษ/สายยศ)</li>
+                                <li class="flex items-center"><span class="mr-2">🎭</span> วิชานักแสดงบันเทิง</li>
+                                <li class="flex items-center"><span class="mr-2">🏃</span> วิชานักกรีฑา (วิ่ง/กระโดดสูง)</li>
+                            </ul>
+                        </div>
+                        <div class="bg-amber-50 border border-amber-200 rounded-lg p-5">
+                            <span class="inline-block bg-amber-200 text-amber-800 text-sm font-medium px-3 py-1 rounded-full mb-3">☀️ วันที่ 2 : การผจญภัย</span>
+                            <ul class="space-y-3">
+                                <li class="flex items-center"><span class="mr-2">🏞️</span> วิชานักผจญภัย (เดินทางไกลแรมคืน, ว่ายน้ำ)</li>
+                                <li class="flex items-center"><span class="mr-2">🧗</span> การไต่เชือก, กระโดดข้ามสิ่งกีดขวาง</li>
+                                <li class="flex items-center"><span class="mr-2">🧭</span> แผนที่ทหาร และเข็มทิศ (พิกัด)</li>
+                            </ul>
+                        </div>
+                        <div class="bg-emerald-50 border border-emerald-200 rounded-lg p-5">
+                            <span class="inline-block bg-emerald-200 text-emerald-800 text-sm font-medium px-3 py-1 rounded-full mb-3">☀️ วันที่ 3 : ธรรมชาติวิทยา</span>
+                            <ul class="space-y-3">
+                                <li class="flex items-center"><span class="mr-2">🔭</span> วิชานักดาราศาสตร์</li>
+                                <li class="flex items-center"><span class="mr-2">🍃</span> วิชานักธรรมชาติวิทยา (โครงงาน)</li>
+                                <li class="flex items-center"><span class="mr-2">👣</span> วิชานักสะกดรอย</li>
+                                <li class="flex items-center"><span class="mr-2">📝</span> ทดสอบความรู้วิชาพิเศษ</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="grade-3" class="grade-content">
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                    <div class="bg-gradient-to-r from-purple-600 to-purple-700 text-white p-6">
+                        <h2 class="text-2xl font-bold flex items-center">
+                            <span class="bg-white/20 p-2 rounded-lg mr-3">👑</span>
+                            ระดับชั้น ม.3 - ความเป็นผู้นำและการบริการ
+                        </h2>
+                    </div>
+                    <div class="border-b border-gray-200">
+                        <nav class="flex justify-center gap-6 -mb-px px-6">
+                            <button onclick="showTerm(3, 1)" id="grade-3-tab-1" class="term-tab term-tab-active py-4 px-1 text-center">ภาคเรียนที่ 1</button>
+                            <button onclick="showTerm(3, 2)" id="grade-3-tab-2" class="term-tab term-tab-inactive py-4 px-1 text-center">ภาคเรียนที่ 2</button>
+                        </nav>
+                    </div>
+                    
+                    <div id="grade-3-term-1" class="term-content active-term p-6 grid md:grid-cols-2 gap-6">
+                        <div class="bg-rose-50 border border-rose-200 rounded-lg p-5">
+                            <span class="inline-block bg-rose-200 text-rose-800 text-sm font-medium px-3 py-1 rounded-full mb-3">☀️ วันที่ 1</span>
+                            <ul class="space-y-3">
+                                <li class="flex items-center"><span class="mr-2">🤝</span> ปฐมนิเทศ</li>
+                                <li class="flex items-center"><span class="mr-2">🏛️</span> หน้าที่พลเมือง</li>
+                                <li class="flex items-center"><span class="mr-2">🏋️</span> สมรรถภาพทางกาย</li>
+                                <li class="flex items-center"><span class="mr-2">🗺️</span> การเดินทางสำรวจ</li>
+                                <li class="flex items-center"><span class="mr-2">🚶</span> ระเบียบแถวและการสวนสนาม</li>
+                            </ul>
+                        </div>
+                        <div class="bg-amber-50 border border-amber-200 rounded-lg p-5">
+                            <span class="inline-block bg-amber-200 text-amber-800 text-sm font-medium px-3 py-1 rounded-full mb-3">☀️ วันที่ 2</span>
+                            <ul class="space-y-3">
+                                <li class="flex items-center"><span class="mr-2">👑</span> การฝึกการเป็นผู้นำ</li>
+                                <li class="flex items-center"><span class="mr-2">🎨</span> การจัดงานแสดงศิลปะ</li>
+                                <li class="flex items-center"><span class="mr-2">🌿</span> สิ่งแวดล้อม</li>
+                                <li class="flex items-center"><span class="mr-2">🤝</span> การบริการ</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div id="grade-3-term-2" class="term-content p-6 grid md:grid-cols-3 gap-6">
+                        <div class="bg-rose-50 border border-rose-200 rounded-lg p-5">
+                            <span class="inline-block bg-rose-200 text-rose-800 text-sm font-medium px-3 py-1 rounded-full mb-3">☀️ วันที่ 1 : วิชาพิเศษ (ผู้นำ)</span>
+                            <ul class="space-y-3">
+                                <li class="flex items-center"><span class="mr-2">🤝</span> ปฐมนิเทศ</li>
+                                <li class="flex items-center"><span class="mr-2">🏛️</span> หน้าที่พลเมือง</li>
+                                <li class="flex items-center"><span class="mr-2">👑</span> วิชาการฝึกเป็นผู้นำ*</li>
+                                <li class="flex items-center"><span class="mr-2">🛠️</span> วิชานักบุกเบิก*</li>
+                            </ul>
+                        </div>
+                        <div class="bg-amber-50 border border-amber-200 rounded-lg p-5">
+                            <span class="inline-block bg-amber-200 text-amber-800 text-sm font-medium px-3 py-1 rounded-full mb-3">☀️ วันที่ 2 : วิชาพิเศษ (ทักษะ)</span>
+                            <ul class="space-y-3">
+                                <li class="flex items-center"><span class="mr-2">☀️</span> วิชานักอุตุนิยมวิทยา*</li>
+                                <li class="flex items-center"><span class="mr-2">📦</span> วิชาพลาธิการ*</li>
+                                <li class="flex items-center"><span class="mr-2">🗣️</span> วิชาล่าม*</li>
+                            </ul>
+                        </div>
+                        <div class="bg-emerald-50 border border-emerald-200 rounded-lg p-5">
+                            <span class="inline-block bg-emerald-200 text-emerald-800 text-sm font-medium px-3 py-1 rounded-full mb-3">☀️ วันที่ 3 : วิชาพิเศษ (อนุรักษ์)</span>
+                            <ul class="space-y-3">
+                                <li class="flex items-center"><span class="mr-2">🌳</span> วิชาอนุรักษ์ธรรมชาติ*</li>
+                                <li class="flex items-center"><span class="mr-2">📝</span> สอบภาคทฤษฎี</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="rotation-section" class="section-content">
+             <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-8">
+                <div class="bg-gradient-to-r from-cyan-600 to-cyan-700 text-white p-6">
+                    <h2 class="text-2xl font-bold flex items-center">
+                        <span class="bg-white/20 p-2 rounded-lg mr-3">🔄</span>
+                        ตารางการเวียนฐาน (Station Rotation)
+                    </h2>
+                    <p class="text-cyan-100 mt-2">แนวทางการจัดกิจกรรมเวียนฐานสำหรับลูกเสือ ม.1, ม.2 และ ม.3</p>
+                </div>
+                
+                <div class="p-6 space-y-6">
+                    <div>
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">หลักการจัดตาราง</h3>
+                        <p class="text-gray-700">ตารางนี้ถูกออกแบบมาเพื่อรองรับ 4 กอง (Troops) โดยแต่ละกองจะเวียนไปตาม 4 สถานี (Stations) ภายใน 4 ช่วงเวลา (Time Slots) ทำให้ทุกกองได้เรียนรู้ครบทุกสถานี</p>
+                        <ul class="list-disc list-inside text-gray-700 mt-3 space-y-1">
+                            <li><strong>หน่วยในการเวียน:</strong> 1 กอง (Troop) (ไม่ใช่ 1 หมู่)</li>
+                            <li><strong>ม.1 (4 กอง x 4 หมู่):</strong> ใช้งานได้ทันที</li>
+                            <li><strong>ม.2 (4 กอง x 4 หมู่):</strong> ใช้งานได้ทันที</li>
+                            <li><strong>ม.3 (4 กอง x 3 หมู่):</strong> ใช้งานได้เช่นกัน กองที่ 1-4 จะเวียนไปพร้อมกัน (แม้ว่าแต่ละกองจะมี 3 หมู่)</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="overflow-x-auto">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-3">ตัวอย่างตารางเวียนฐาน (4x4)</h3>
+                        <table class="w-full min-w-lg text-left border-collapse">
+                            <thead class="bg-gray-100">
+                                <tr>
+                                    <th class="py-3 px-4 font-semibold text-gray-700 border border-gray-200">เวลา / กอง</th>
+                                    <th class="py-3 px-4 font-semibold text-gray-700 border border-gray-200 text-center bg-blue-50">กองที่ 1</th>
+                                    <th class="py-3 px-4 font-semibold text-gray-700 border border-gray-200 text-center bg-green-50">กองที่ 2</th>
+                                    <th class="py-3 px-4 font-semibold text-gray-700 border border-gray-200 text-center bg-amber-50">กองที่ 3</th>
+                                    <th class="py-3 px-4 font-semibold text-gray-700 border border-gray-200 text-center bg-rose-50">กองที่ 4</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="py-3 px-4 font-medium text-gray-600 border border-gray-200">ช่วงที่ 1 (08:00-10:00)</td>
+                                    <td class="py-3 px-4 border border-gray-200 text-center">
+                                        <span class="font-bold text-blue-700">สถานี A</span>
+                                    </td>
+                                    <td class="py-3 px-4 border border-gray-200 text-center">
+                                        <span class="font-bold text-green-700">สถานี B</span>
+                                    </td>
+                                    <td class="py-3 px-4 border border-gray-200 text-center">
+                                        <span class="font-bold text-amber-700">สถานี C</span>
+                                    </td>
+                                    <td class="py-3 px-4 border border-gray-200 text-center">
+                                        <span class="font-bold text-rose-700">สถานี D</span>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="py-3 px-4 font-medium text-gray-600 border border-gray-200">ช่วงที่ 2 (10:00-12:00)</td>
+                                    <td class="py-3 px-4 border border-gray-200 text-center">
+                                        <span class="font-bold text-rose-700">สถานี D</span>
+                                    </td>
+                                    <td class="py-3 px-4 border border-gray-200 text-center">
+                                        <span class="font-bold text-blue-700">สถานี A</span>
+                                    </td>
+                                    <td class="py-3 px-4 border border-gray-200 text-center">
+                                        <span class="font-bold text-green-700">สถานี B</span>
+                                    </td>
+                                    <td class="py-3 px-4 border border-gray-200 text-center">
+                                        <span class="font-bold text-amber-700">สถานี C</span>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="py-3 px-4 font-medium text-gray-600 border border-gray-200">ช่วงที่ 3 (13:00-14:30)</td>
+                                    <td class="py-3 px-4 border border-gray-200 text-center">
+                                        <span class="font-bold text-amber-700">สถานี C</span>
+                                    </td>
+                                    <td class="py-3 px-4 border border-gray-200 text-center">
+                                        <span class="font-bold text-rose-700">สถานี D</span>
+                                    </td>
+                                    <td class="py-3 px-4 border border-gray-200 text-center">
+                                        <span class="font-bold text-blue-700">สถานี A</span>
+                                    </td>
+                                    <td class="py-3 px-4 border border-gray-200 text-center">
+                                        <span class="font-bold text-green-700">สถานี B</span>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-gray-50">
+                                    <td class="py-3 px-4 font-medium text-gray-600 border border-gray-200">ช่วงที่ 4 (14:30-16:00)</td>
+                                    <td class="py-3 px-4 border border-gray-200 text-center">
+                                        <span class="font-bold text-green-700">สถานี B</span>
+                                    </td>
+                                    <td class="py-3 px-4 border border-gray-200 text-center">
+                                        <span class="font-bold text-amber-700">สถานี C</span>
+                                    </td>
+                                    <td class="py-3 px-4 border border-gray-200 text-center">
+                                        <span class="font-bold text-rose-700">สถานี D</span>
+                                    </td>
+                                    <td class="py-3 px-4 border border-gray-200 text-center">
+                                        <span class="font-bold text-blue-700">สถานี A</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div>
+                        <h3 class="text-xl font-semibold text-gray-800 mb-3">ตัวอย่างการจัดสถานี (ม.1 ภาคเรียนที่ 1)</h3>
+                        <p class="text-gray-700 mb-4">คุณสามารถกำหนดเนื้อหาในแต่ละวันให้สอดคล้องกับตารางเวียนฐาน 4x4 นี้ได้ เช่น:</p>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div class="bg-gray-50 p-4 rounded-lg border">
+                                <h4 class="font-semibold text-gray-800">Day 1: ทักษะบุกเบิก (4 สถานี)</h4>
+                                <ul class="list-disc list-inside text-gray-600 mt-2">
+                                    <li><strong>สถานี A:</strong> 🪢 การผูกเงื่อน</li>
+                                    <li><strong>สถานี B:</strong> 🧭 แผนที่และเข็มทิศ</li>
+                                    <li><strong>สถานี C:</strong> 🩹 การปฐมพยาบาล</li>
+                                    <li><strong>สถานี D:</strong> 🚶 ระเบียบแถว</li>
+                                </ul>
+                            </div>
+                            <div class="bg-gray-50 p-4 rounded-lg border">
+                                <h4 class="font-semibold text-gray-800">Day 2: ทักษะชาวค่าย (4 สถานี)</h4>
+                                 <ul class="list-disc list-inside text-gray-600 mt-2">
+                                    <li><strong>สถานี A:</strong> 🏕️ การกางเต็นท์</li>
+                                    <li><strong>สถานี B:</strong> 🔥 การก่อไฟและปรุงอาหาร</li>
+                                    <li><strong>สถานี C:</strong> 🎒 การบรรจุเครื่องหลัง</li>
+                                    <li><strong>สถานี D:</strong> 🗣️ สัญญาณมือ/นกหวีด</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+             </div>
+        </div>
+
+        <div id="materials-section" class="section-content">
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-8">
+                <div class="bg-gradient-to-r from-green-600 to-green-700 text-white p-6">
+                    <h2 class="text-2xl font-bold flex items-center">
+                        <span class="bg-white/20 p-2 rounded-lg mr-3">📖</span>
+                        สื่อใบความรู้ลูกเสือ
+                    </h2>
+                    <p class="text-green-100 mt-2">เอกสารและสื่อการเรียนรู้สำหรับกิจกรรมลูกเสือแต่ละระดับชั้น</p>
+                </div>
+                
+                <div class="p-6">
+                    <div class="grid md:grid-cols-3 gap-6">
+                        <div class="bg-blue-50 rounded-lg p-6 card-hover border border-blue-100">
+                            <div class="text-center mb-4">
+                                <div class="bg-blue-600 text-white w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-3 text-3xl">
+                                    📚
+                                </div>
+                                <h3 class="text-xl font-bold text-blue-800">ม.1 - พื้นฐาน</h3>
+                            </div>
+                            <ul class="space-y-3">
+                                <li class="flex items-center text-gray-700"><span class="w-2 h-2 bg-blue-500 rounded-full mr-3"></span> คู่มือระเบียบแถวลูกเสือ</li>
+                                <li class="flex items-center text-gray-700"><span class="w-2 h-2 bg-blue-500 rounded-full mr-3"></span> ใบความรู้การผูกเงื่อน 9 แบบ</li>
+                                <li class="flex items-center text-gray-700"><span class="w-2 h-2 bg-blue-500 rounded-full mr-3"></span> คำปฏิญาณและกฎลูกเสือ</li>
+                                <li class="flex items-center text-gray-700"><span class="w-2 h-2 bg-blue-500 rounded-full mr-3"></span> คู่มือการกางเต็นท์</li>
+                            </ul>
+                            <button class="w-full mt-4 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors font-medium">
+                                ดาวน์โหลดเอกสาร
+                            </button>
+                        </div>
+                        <div class="bg-green-50 rounded-lg p-6 card-hover border border-green-100">
+                            <div class="text-center mb-4">
+                                <div class="bg-green-600 text-white w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-3 text-3xl">
+                                    🎯
+                                </div>
+                                <h3 class="text-xl font-bold text-green-800">ม.2 - จิตสาธารณะ</h3>
+                            </div>
+                            <ul class="space-y-3">
+                                <li class="flex items-center text-gray-700"><span class="w-2 h-2 bg-green-500 rounded-full mr-3"></span> คู่มือการอ่านแผนที่และเข็มทิศ</li>
+                                <li class="flex items-center text-gray-700"><span class="w-2 h-2 bg-green-500 rounded-full mr-3"></span> ใบความรู้นักธรรมชาติวิทยา</li>
+                                <li class="flex items-center text-gray-700"><span class="w-2 h-2 bg-green-500 rounded-full mr-3"></span> คู่มือการอนุรักษ์สิ่งแวดล้อม</li>
+                                <li class="flex items-center text-gray-700"><span class="w-2 h-2 bg-green-500 rounded-full mr-3"></span> ใบงานนักดาราศาสตร์</li>
+                            </ul>
+                            <button class="w-full mt-4 bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition-colors font-medium">
+                                ดาวน์โหลดเอกสาร
+                            </button>
+                        </div>
+                        <div class="bg-purple-50 rounded-lg p-6 card-hover border border-purple-100">
+                            <div class="text-center mb-4">
+                                <div class="bg-purple-600 text-white w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-3 text-3xl">
+                                    👑
+                                </div>
+                                <h3 class="text-xl font-bold text-purple-800">ม.3 - ผู้นำ</h3>
+                            </div>
+                            <ul class="space-y-3">
+                                <li class="flex items-center text-gray-700"><span class="w-2 h-2 bg-purple-500 rounded-full mr-3"></span> คู่มือการเป็นผู้นำหมู่</li>
+                                <li class="flex items-center text-gray-700"><span class="w-2 h-2 bg-purple-500 rounded-full mr-3"></span> ใบความรู้นักบุกเบิก</li>
+                                <li class="flex items-center text-gray-700"><span class="w-2 h-2 bg-purple-500 rounded-full mr-3"></span> คู่มือการจัดกิจกรรมกลุ่ม</li>
+                                <li class="flex items-center text-gray-700"><span class="w-2 h-2 bg-purple-500 rounded-full mr-3"></span> ใบงานการบริการชุมชน</li>
+                            </ul>
+                            <button class="w-full mt-4 bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700 transition-colors font-medium">
+                                ดาวน์โหลดเอกสาร
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-8 bg-orange-50 rounded-lg p-6 border-2 border-orange-200">
+                        <div class="flex items-center mb-4">
+                            <div class="bg-orange-600 text-white p-3 rounded-full mr-3">
+                                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18.5,9L13,3.5V9H18.5M6,20V4H11V10H18V20H6Z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-2xl font-bold text-orange-800">📖 คู่มือระเบียบแถวลูกเสือ</h3>
+                        </div>
+                        <p class="text-gray-700 mb-4">เอกสารคู่มือระเบียบแถวสำหรับลูกเสือทุกระดับชั้น - ใช้ร่วมกันทั้งหมด</p>
+                        <a href="https://drive.google.com/file/d/1nu5f-Kt1DnZdYtfTohyy-796-5pmjT8C/view?usp=sharing" target="_blank" rel="noopener noreferrer" class="download-btn download-btn-pdf inline-flex">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18.5,9L13,3.5V9H18.5M6,20V4H11V10H18V20H6Z"></path>
+                            </svg>
+                            <span>ดาวน์โหลดคู่มือ PDF</span>
+                        </a>
+                    </div>
+                    
+                    <div class="mt-6 bg-blue-50 rounded-lg p-6 border-2 border-blue-200">
+                        <div class="flex items-center mb-4">
+                            <div class="bg-blue-600 text-white p-3 rounded-full mr-3">
+                                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18.5,9L13,3.5V9H18.5M6,20V4H11V10H18V20H6Z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-2xl font-bold text-blue-800">🪢 เงื่อนลูกเสือสามัญรุ่นใหญ่</h3>
+                        </div>
+                        <p class="text-gray-700 mb-4">คู่มือการผูกเงื่อนลูกเสือสามัญรุ่นใหญ่แบบต่างๆ</p>
+                        <a href="https://drive.google.com/file/d/1_v9xSRBQDFJ0NZ8rn0UiGXx91zpZKj0l/view?usp=sharing" target="_blank" rel="noopener noreferrer" class="download-btn download-btn-pdf inline-flex">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18.5,9L13,3.5V9H18.5M6,20V4H11V10H18V20H6Z"></path>
+                            </svg>
+                            <span>ดาวน์โหลด PDF</span>
+                        </a>
+                    </div>
+                    
+                    <div class="mt-6 bg-green-50 rounded-lg p-6 border-2 border-green-200">
+                        <div class="flex items-center mb-4">
+                            <div class="bg-green-600 text-white p-3 rounded-full mr-3">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-2xl font-bold text-green-800">🧭 เข็มทิศและการหาทิศ</h3>
+                        </div>
+                        <p class="text-gray-700 mb-4">คู่มือการใช้เข็มทิศและเทคนิคการหาทิศทาง</p>
+                        <a href="https://drive.google.com/file/d/1AuxAQVppy5co8UAE1COZeS--QmYkax_r/view?usp=sharing" target="_blank" rel="noopener noreferrer" class="download-btn download-btn-pdf inline-flex">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18.5,9L13,3.5V9H18.5M6,20V4H11V10H18V20H6Z"></path>
+                            </svg>
+                            <span>ดาวน์โหลด PDF</span>
+                        </a>
+                    </div>
+                    
+                    <div class="mt-6 bg-purple-50 rounded-lg p-6 border-2 border-purple-200">
+                        <div class="flex items-center mb-4">
+                            <div class="bg-purple-600 text-white p-3 rounded-full mr-3">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-2xl font-bold text-purple-800">⭐ นักดาราศาสตร์</h3>
+                        </div>
+                        <p class="text-gray-700 mb-4">ใบความรู้นักดาราศาสตร์ (แหล่งที่มา: โรงเรียนลาดปลาเค้าพิทยาคม)</p>
+                        <a href="https://www.canva.com/design/DAGY4x8nWrU/FmLP3dIFmx3mLMNGrmyndg/edit?utm_content=DAGY4x8nWrU&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton" target="_blank" rel="noopener noreferrer" class="download-btn inline-flex" style="background: linear-gradient(135deg, #7c3aed, #a855f7); color: white;">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                            </svg>
+                            <span>เปิดดูใน Canva</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        
+        <div id="lesson-plans-section" class="section-content">
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <div class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white p-6 rounded-lg mb-6">
+                    <h2 class="text-2xl font-bold flex items-center">
+                        <span class="bg-white/20 p-2 rounded-lg mr-3">📋</span>
+                        แผนการจัดการเรียนรู้
+                    </h2>
+                    <p class="text-sm opacity-90 mt-2">แผนการสอนและเอกสารสำหรับครูผู้สอนแยกตามระดับชั้น</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-6 card-hover border-2 border-blue-300">
+                        <div class="flex items-center mb-4">
+                            <div class="bg-blue-600 text-white p-3 rounded-full mr-3">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-xl font-bold text-blue-800">แผนการสอน ม.1</h3>
+                        </div>
+                        <p class="text-gray-700 mb-4">แผนการจัดการเรียนรู้สำหรับครูผู้สอนระดับ ม.1</p>
+                        <div class="space-y-2">
+                            <a href="https://docs.google.com/document/d/1dgSVcY1t5J6PwhLvISlHQMkfZOYoPppC/edit?usp=sharing&ouid=114907998310633074123&rtpof=true&sd=true" target="_blank" rel="noopener noreferrer" class="download-btn download-btn-word w-full justify-center">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18.5,9L13,3.5V9H18.5Z"></path>
+                                </svg>
+                                <span>เปิด Word Online</span>
+                            </a>
+                            <a href="https://drive.google.com/file/d/16OuLFWqz-jM4uobFqcufNFXIAucP4GPu/view?usp=sharing" target="_blank" rel="noopener noreferrer" class="download-btn download-btn-pdf w-full justify-center">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18.5,9L13,3.5V9H18.5M6,20V4H11V10H18V20H6Z"></path>
+                                </svg>
+                                <span>ดาวน์โหลด PDF</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-lg p-6 card-hover border-2 border-green-300">
+                        <div class="flex items-center mb-4">
+                            <div class="bg-green-600 text-white p-3 rounded-full mr-3">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-xl font-bold text-green-800">แผนการสอน ม.2</h3>
+                        </div>
+                        <p class="text-gray-700 mb-4">แผนการจัดการเรียนรู้สำหรับครูผู้สอนระดับ ม.2</p>
+                        <div class="space-y-2">
+                            <a href="https://docs.google.com/document/d/1t6WcvcA3vc0PxHquJJcmEfCgos7inDRf/edit?usp=drive_link&ouid=114907998310633074123&rtpof=true&sd=true" target="_blank" rel="noopener noreferrer" class="download-btn download-btn-word w-full justify-center">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18.5,9L13,3.5V9H18.5Z"></path>
+                                </svg>
+                                <span>เปิด Word Online</span>
+                            </a>
+                            <a href="https://drive.google.com/file/d/1MZ0annr1ETD7Nh3zV1Esn6z4hskPYvbj/view?usp=sharing" target="_blank" rel="noopener noreferrer" class="download-btn download-btn-pdf w-full justify-center">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18.5,9L13,3.5V9H18.5M6,20V4H11V10H18V20H6Z"></path>
+                                </svg>
+                                <span>ดาวน์โหลด PDF</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-6 card-hover border-2 border-purple-300">
+                        <div class="flex items-center mb-4">
+                            <div class="bg-purple-600 text-white p-3 rounded-full mr-3">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-xl font-bold text-purple-800">แผนการสอน ม.3</h3>
+                        </div>
+                        <p class="text-gray-700 mb-4">แผนการจัดการเรียนรู้สำหรับครูผู้สอนระดับ ม.3</p>
+                        <div class="space-y-2">
+                            <a href="https://docs.google.com/document/d/1hAT_N0QB4XW1wn97WbZiwU6vK1djByTO/edit?usp=drive_link&ouid=114907998310633074123&rtpof=true&sd=true" target="_blank" rel="noopener noreferrer" class="download-btn download-btn-word w-full justify-center">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18.5,9L13,3.5V9H18.5Z"></path>
+                                </svg>
+                                <span>เปิด Word Online</span>
+                            </a>
+                            <a href="https://drive.google.com/file/d/1_R9qGoyet9216LsyMF78PyiG0PBjK6XN/view?usp=sharing" target="_blank" rel="noopener noreferrer" class="download-btn download-btn-pdf w-full justify-center">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18.5,9L13,3.5V9H18.5M6,20V4H11V10H18V20H6Z"></path>
+                                </svg>
+                                <span>ดาวน์โหลด PDF</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-6 bg-indigo-50 rounded-lg p-4 border border-indigo-200">
+                    <h3 class="font-bold text-indigo-800 mb-2">📌 คำแนะนำสำหรับครู:</h3>
+                    <ul class="list-disc list-inside text-gray-700 space-y-1">
+                        <li>แผนการจัดการเรียนรู้ประกอบด้วยวัตถุประสงค์ กิจกรรม และการวัดผล</li>
+                        <li>สามารถดาวน์โหลดและปรับแต่งให้เหมาะกับบริบทของโรงเรียน</li>
+                        <li>ควรศึกษาแผนการสอนล่วงหน้าอย่างน้อย 1 สัปดาห์</li>
+                        <li>มีคำแนะนำการจัดกิจกรรมและเทคนิคการสอนในแต่ละฐาน</li>
+                        <li>ไฟล์ Word สามารถแก้ไขได้ / ไฟล์ PDF ใช้สำหรับอ่านและพิมพ์</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+<div id="quiz-section" class="section-content">
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-8">
+                <div class="bg-gradient-to-r from-orange-500 to-orange-600 text-white p-6">
+                    <h2 class="text-2xl font-bold flex items-center">
+                        <span class="bg-white/20 p-2 rounded-lg mr-3">📝</span>
+                        แบบทดสอบลูกเสือ
+                    </h2>
+                    <p class="text-orange-100 mt-2">เลือกแบบทดสอบตามระดับชั้นของท่าน</p>
+                </div>
+                
+                <div class="p-6">
+                    <div class="grid md:grid-cols-3 gap-6">
+
+                        <a href="https://jinchanya-boop.github.io/scouttest/" target="_blank" rel="noopener noreferrer" class="block bg-blue-50 rounded-lg p-6 card-hover border border-blue-100 transition-all duration-300">
+                            <div class="flex items-center mb-4">
+                                <div class="bg-blue-600 text-white w-12 h-12 rounded-full flex items-center justify-center mr-4 text-xl">📚</div>
+                                <div>
+                                    <h3 class="text-xl font-bold text-blue-800">แบบทดสอบ ม.1</h3>
+                                    <p class="text-blue-600">พื้นฐานวินัย</p>
+                                </div>
+                            </div>
+                            <div class="w-full mt-4 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors text-center font-medium">
+                                เริ่มทำแบบทดสอบ
+                            </div>
+                        </a>
+
+                        <a href="https://jinchanya-boop.github.io/scouttest2/" target="_blank" rel="noopener noreferrer" class="block bg-green-50 rounded-lg p-6 card-hover border border-green-100 transition-all duration-300">
+                            <div class="flex items-center mb-4">
+                                <div class="bg-green-600 text-white w-12 h-12 rounded-full flex items-center justify-center mr-4 text-xl">🎯</div>
+                                <div>
+                                    <h3 class="text-xl font-bold text-green-800">แบบทดสอบ ม.2</h3>
+                                    <p class="text-green-600">จิตสาธารณะ</p>
+                                </div>
+                            </div>
+                            <div class="w-full mt-4 bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition-colors text-center font-medium">
+                                เริ่มทำแบบทดสอบ
+                            </div>
+                        </a>
+
+                        <a href="https://jinchanya-boop.github.io/scouttest3/" target="_blank" rel="noopener noreferrer" class="block bg-purple-50 rounded-lg p-6 card-hover border border-purple-100 transition-all duration-300">
+                            <div class="flex items-center mb-4">
+                                <div class="bg-purple-600 text-white w-12 h-12 rounded-full flex items-center justify-center mr-4 text-xl">👑</div>
+                                <div>
+                                    <h3 class="text-xl font-bold text-purple-800">แบบทดสอบ ม.3</h3>
+                                    <p class="text-purple-600">ความเป็นผู้นำ</p>
+                                </div>
+                            </div>
+                            <div class="w-full mt-4 bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700 transition-colors text-center font-medium">
+                                เริ่มทำแบบทดสอบ
+                            </div>
+                        </a>
+
+                    </div>
+                </div>
+                </div>
+        </div>
+
+        <div id="songs-games-section" class="section-content">
+             <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-8">
+                <div class="bg-gradient-to-r from-indigo-600 to-violet-700 text-white p-6">
+                    <h2 class="text-2xl font-bold flex items-center">
+                        <span class="bg-white/20 p-2 rounded-lg mr-3">🎵</span>
+                        เพลงและเกมลูกเสือ
+                    </h2>
+                    <p class="text-indigo-100 mt-2">แหล่งรวมเพลงและเกมสำหรับกิจกรรมนันทนาการและเสริมสร้างทักษะ</p>
+                </div>
+                
+                <div class="p-6 space-y-8">
+                    <div>
+                        <h3 class="text-2xl font-bold text-gray-800 mb-4 border-l-4 border-indigo-500 pl-4">เพลงลูกเสือ</h3>
+                        <div class="grid md:grid-cols-1 lg:grid-cols-3 gap-6">
+                            
+                            <div class="bg-indigo-50 rounded-lg p-6 card-hover border border-indigo-100">
+                                <h4 class="text-xl font-bold text-indigo-800 mb-2">เพลง ราชสดุดี</h4>
+                                <pre class="text-gray-700 whitespace-pre-wrap font-sans">ข้าลูกเสือเชื้อไทยใจเคารพ ขอน้อมนบบาทบงสุ์พระทรงศรี
+พระบาทมงกุฎเกล้าจอมเมาฬี ทรงปราณี ก่อเกื้อลูกเสือมา
+ทรงอุตส่าห์อบรมบ่มนิสัย ให้มีใจ รักชาติ ศาสนา
+ทรงสั่งสอนสรรพกิจวิทยาเป็นอาภาผ่องพุทธวุฒิไกร
+ดังดวงจันทร์ทราทิตย์ประสิทธิ์แสง กระจ่างแจ้ง แจ่มภพ สบสมัย
+พระคุณนี้จะสถิตย์สนิทใน ดวงหทัยทวยราษฎร์ไม่คลาดเอย</pre>
+                            </div>
+                            
+                            <div class="bg-violet-50 rounded-lg p-6 card-hover border border-violet-100">
+                                <h4 class="text-xl font-bold text-violet-800 mb-2">เพลง ลูกเสือธีรราช</h4>
+                                <pre class="text-gray-700 whitespace-pre-wrap font-sans">เหล่าลูกเสือ ของธีรราช ทนงองอาจสืบชาติเชื้อพงศ์พันธ์
+สมัครสมานโดยมีสามัคคีมั่น พวกเราจะรักร่วมกัน
+จะผูกสัมพันธ์ตลอดกาล มีจรรยา รักษาชื่อ
+สร้างเกียรติระบือเลื่องลือต่อไปช้านาน ร่าเริงแจ่มใส
+ใฝ่ใจรักให้ยืนนาน พวกเราล้วนชื่นบาน เพราะกิจการลูกเสือไทย</pre>
+                            </div>
+                            
+                            <div class="bg-purple-50 rounded-lg p-6 card-hover border border-purple-100">
+                                <h4 class="text-xl font-bold text-purple-800 mb-2">เพลง สยามานุสติ</h4>
+                                <pre class="text-gray-700 whitespace-pre-wrap font-sans">ใครรานใครรุกด้าว แดนไทย
+ไทยรบจนสุดใจ ขาดดิ้น
+เสียเนื้อเลือดหลั่งไหล ยอมสละ สิ้นแล
+เสียชีพไป่เสียสิ้น ชื่อก้องเกียรติงาม
+หากสยามยังอยู่ยั้ง ยืนยง
+เราก็เหมือนอยู่คง ชีพด้วย
+หากสยามพินาศลง ไทยอยู่ได้ ฤา
+เราก็เหมือนมอดม้วย หมดสิ้นสกุลไทย</pre>
+                            </div>
+                            
+                            <div class="bg-indigo-50 rounded-lg p-6 card-hover border border-indigo-100">
+                                <h4 class="text-xl font-bold text-indigo-800 mb-2">เพลง เกียรติศักดิ์ลูกเสือไทย</h4>
+                                <pre class="text-gray-700 whitespace-pre-wrap font-sans">ลูกเสือ ลูกเสือ ไว้ศักดิ์ซิลูกผู้ชายลูกเสือ
+ลูกเสือ ไว้ลายซิลูกเสือไทย
+รักเกียรติ รักวินัย แข็งแรงและอดทน
+เราจะบำเพ็ญตนเป็นประโยชน์ต่อผู้อื่น
+แม้ลำบากตรากตรำต้องทำให้สำเร็จ ทำ ทำ ทำ ข้าฯ สัญญว่าจะทำ
+เสียชีพอย่าเสียสัตย์ รักชาติให้มั่นไว้ ดังนามอันเกรียงไกรพระมงกุฎทรงประทาน</pre>
+                            </div>
+
+                            <div class="bg-violet-50 rounded-lg p-6 card-hover border border-violet-100">
+                                <h4 class="text-xl font-bold text-violet-800 mb-2">เพลง บริการ</h4>
+                                <pre class="text-gray-700 whitespace-pre-wrap font-sans">(สร้อย) บริการ บริการ งานที่พวกเราทำ เป็นประจำ เราทำไปไม่เคยคิดรวนเร เฮ้ (ซ้ำ)
+เก็บกวาดเราทำสิ่ง ไม่เคยคิดที่จะเบื่อ
+เพราะเรานี้เป็นลูกเสือ ช่วยเหลือหน้าที่บริการ (สร้อย)
+เก็บกวาดเราทำทุกอย่าง สะอาดทุกทางที่ผ่าน
+หน้าที่ทุก ๆ สถาน เรานั้นบริการทั่วไป (สร้อย)</pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-2xl font-bold text-gray-800 mb-4 border-l-4 border-violet-500 pl-4">เกมลูกเสือ</h3>
+                        <div class="grid md:grid-cols-1 lg:grid-cols-3 gap-6">
+                            
+                            <div class="bg-gray-50 rounded-lg p-6 card-hover border border-gray-200">
+                                <h4 class="text-xl font-bold text-gray-800 mb-2">เกม จับข้ามแม่น้ำ</h4>
+                                <p class="font-semibold text-gray-700">วิธีการเล่น:</p>
+                                <ul class="list-disc list-inside text-gray-600 space-y-1">
+                                    <li>ขีดเส้นขนาน 2 เส้นบนพื้นสนาม ห่างกันประมาณ 50 ซม. (เปรียบเสมือนแม่น้ำ)</li>
+                                    <li>แบ่งลูกเสือเป็น 2 ทีมเท่าๆ กัน ยืนบนเส้นหันหน้าเข้าหากัน</li>
+                                    <li>เมื่อได้สัญญาณ ให้พยายามดึงฝ่ายตรงข้ามมายังฝั่งตัวเอง</li>
+                                    <li>คนที่ถูกดึงไปแล้วสามารถให้เพื่อนทีมเดียวกันมาดึงกลับไปได้</li>
+                                    <li>ทีมที่ดึงสมาชิกฝ่ายตรงข้ามมาได้มากที่สุดเป็นผู้ชนะ</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="bg-gray-50 rounded-lg p-6 card-hover border border-gray-200">
+                                <h4 class="text-xl font-bold text-gray-800 mb-2">เกม วิ่งเปี้ยววงกลม</h4>
+                                <p class="font-semibold text-gray-700">วิธีการเล่น:</p>
+                                <ul class="list-disc list-inside text-gray-600 space-y-1">
+                                    <li>เขียนวงกลมใหญ่และลากเส้นผ่านศูนย์กลาง</li>
+                                    <li>แบ่งผู้เล่นเป็น 2 ทีม ยืนฝั่งละครึ่งวงกลมหันหน้าออก</li>
+                                    <li>คนแรกของแต่ละทีมเริ่มวิ่งรอบวงกลมพร้อมถือผ้า</li>
+                                    <li>เมื่อวิ่งครบรอบให้ส่งผ้าให้คนถัดไป</li>
+                                    <li>ฝ่ายที่ใช้ผ้าตีฝ่ายตรงข้ามได้ก่อนเป็นผู้ชนะ</li>
+                                </ul>
+                            </div>
+                            
+                            <div class="bg-gray-50 rounded-lg p-6 card-hover border border-gray-200">
+                                <h4 class="text-xl font-bold text-gray-800 mb-2">เกม เคลื่อนย้ายผู้ป่วย</h4>
+                                <p class="font-semibold text-gray-700">วิธีการเล่น:</p>
+                                <ul class="list-disc list-inside text-gray-600 space-y-1">
+                                    <li>จัดแถวเป็นแถวตอน</li>
+                                    <li>คัดเลือกคนแข็งแรง 2 คนในแต่ละแถวออกมาทำ "แคร่" ด้วยมือ 4 ข้าง</li>
+                                    <li>ให้คนที่เหลือในแถวนั่งบนแคร่ทีละคน แล้วเคลื่อนย้ายไปที่เส้นชัย</li>
+                                    <li>เมื่อส่งถึงแล้ว ให้วิ่งกลับมารับคนต่อไป</li>
+                                    <li>หมู่ที่เคลื่อนย้ายคนได้ครบหมดก่อนเป็นผู้ชนะ</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-gray-50 rounded-lg p-6 card-hover border border-gray-200">
+                                <h4 class="text-xl font-bold text-gray-800 mb-2">เกม หาพิศ</h4>
+                                <p class="font-semibold text-gray-700">อุปกรณ์:</p>
+                                <p class="text-gray-600 mb-3">เข็มทิศ, กระดาษแข็ง, ฝาขวดน้ำที่เขียนองศาไว้</p>
+                                <p class="font-semibold text-gray-700">วิธีการเล่น:</p>
+                                <ul class="list-disc list-inside text-gray-600 space-y-1">
+                                    <li>เข้าแถวตอนตามหมู่ ห่างจากจุดวางเข็มทิศ 8 เมตร</li>
+                                    <li>เมื่อได้ยินสัญญาณ นายหมู่จะวิ่งไปหยิบฝาขวดน้ำ 1 อัน</li>
+                                    <li>ดูองศาบนฝา แล้วใช้เข็มทิศวางฝานั้นลงบนกระดาษแข็งให้ตรงกับทิศตามองศาที่กำหนด</li>
+                                    <li>วิ่งกลับมาแตะมือคนต่อไป คนต่อไปทำเช่นเดียวกันจนครบ</li>
+                                    <li>หมู่ที่ทำได้ถูกต้องมากที่สุดเป็นผู้ชนะ</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-gray-50 rounded-lg p-6 card-hover border border-gray-200">
+                                <h4 class="text-xl font-bold text-gray-800 mb-2">เกม วิบาก (วิ่งสามขา)</h4>
+                                <p class="font-semibold text-gray-700">วิธีการเล่น:</p>
+                                <ul class="list-disc list-inside text-gray-600 space-y-1">
+                                    <li>เข้าแถวหน้ากระดาน 2 แถว จับคู่กัน</li>
+                                    <li>คนแถวหลังยกขาขวาขึ้น ให้คนแถวหน้าจับไว้</li>
+                                    <li>มือทั้งสองของคนแถวหลังจับบ่าคนข้างหน้า</li>
+                                    <li>เมื่อได้ยินสัญญาณ ให้แต่ละคู่วิ่งไปยังเส้นชัยในลักษณะ 3 ขา</li>
+                                    <li>ห้ามแยกออกจากกัน หากล้มให้เริ่มใหม่จากจุดที่ล้ม</li>
+                                    <li>คู่ที่ถึงเส้นชัยก่อนเป็นผู้ชนะ</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <footer class="bg-gray-800 text-white py-8 px-4 mt-12">
+        <div class="max-w-6xl mx-auto text-center">
+            <div class="flex items-center justify-center mb-4">
+                <svg class="w-6 h-6 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2L13.09 8.26L22 9L13.09 9.74L12 16L10.91 9.74L2 9L10.91 8.26L12 2Z"/>
+                </svg>
+                <h3 class="text-xl font-semibold">โรงเรียนสา</h3>
+            </div>
+            <p class="text-gray-300 mb-2">กำหนดการเรียนรู้ลูกเสือแบบ Block Course</p>
+            <p class="text-gray-400 text-sm">ลูกเสือสามัญรุ่นใหญ่ ม.1 ม.2 ม.3 • Block Course 3 วัน ไป-กลับ</p>
+        </div>
+    </footer>
+
+    <script>
+        // ฟังก์ชันสำหรับสลับเมนูหลัก
+        function showSection(sectionId) {
+            // ซ่อนทุก Section
+            document.querySelectorAll('.section-content, #schedule-tabs').forEach(el => {
+                el.style.display = 'none';
+            });
+            
+            // อัปเดตสไตล์ปุ่มเมนูหลัก
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('nav-btn-active');
+                btn.classList.add('nav-btn-inactive');
+            });
+            
+            // แสดง Section ที่เลือก
+            if (sectionId === 'schedule') {
+                document.getElementById('schedule-tabs').style.display = 'block';
+                document.getElementById('schedule-section').style.display = 'block';
+                // และแสดง grade-1 ที่เป็น default
+                showGrade(1); 
+            } else {
+                document.getElementById(`${sectionId}-section`).style.display = 'block';
+            }
+            
+            // ทำให้ปุ่มที่เลือก active
+            document.getElementById(`nav-${sectionId}`).classList.add('nav-btn-active');
+            document.getElementById(`nav-${sectionId}`).classList.remove('nav-btn-inactive');
+            
+            // Scroll to top of content area
+            window.scrollTo({ top: document.querySelector('header').offsetHeight - 20, behavior: 'smooth' });
+        }
+
+        // ฟังก์ชันสำหรับสลับชั้นปี
+        function showGrade(grade) {
+            // ซ่อนทุก Grade
+            document.querySelectorAll('.grade-content').forEach(content => {
+                content.style.display = 'none';
+            });
+            
+            // แสดง Grade ที่เลือก
+            document.getElementById(`grade-${grade}`).style.display = 'block';
+            
+            // อัปเดตสไตล์ปุ่ม Tab
+            document.querySelectorAll('.tab-btn').forEach(tab => {
+                tab.classList.remove('tab-btn-active');
+                tab.classList.add('bg-gray-100', 'text-gray-700', 'hover:bg-gray-200');
+            });
+            
+            // ทำให้ Tab ที่เลือก active
+            const activeTab = document.getElementById(`tab-${grade}`);
+            activeTab.classList.add('tab-btn-active');
+            activeTab.classList.remove('bg-gray-100', 'text-gray-700', 'hover:bg-gray-200');
+
+            // ตั้งค่าภาคเรียนที่ 1 เป็น default เมื่อเปลี่ยนชั้นปี
+            showTerm(grade, 1);
+        }
+
+        // ฟังก์ชันใหม่สำหรับสลับภาคเรียน
+        function showTerm(grade, term) {
+            // ซ่อนเนื้อหาภาคเรียนทั้งหมดของชั้นปีนั้นๆ
+            document.querySelectorAll(`#grade-${grade} .term-content`).forEach(content => {
+                content.style.display = 'none';
+            });
+
+            // แสดงเนื้อหาภาคเรียนที่เลือก
+            document.getElementById(`grade-${grade}-term-${term}`).style.display = 'grid'; // ใช้ grid ตามที่ออกแบบไว้
+
+            // อัปเดตสไตล์ปุ่ม Tab ภาคเรียน
+            document.querySelectorAll(`#grade-${grade} .term-tab`).forEach(tab => {
+                tab.classList.remove('term-tab-active');
+                tab.classList.add('term-tab-inactive');
+            });
+
+            // ทำให้ Tab ภาคเรียนที่เลือก active
+            document.getElementById(`grade-${grade}-tab-${term}`).classList.add('term-tab-active');
+            document.getElementById(`grade-${grade}-tab-${term}`).classList.remove('term-tab-inactive');
+        }
+
+        // ตั้งค่าเริ่มต้นเมื่อโหลดหน้า
+        document.addEventListener('DOMContentLoaded', function() {
+            showSection('schedule');
+            showGrade(1);
+            showTerm(1, 1);
+        });
+    </script>
+</body>
+</html>
